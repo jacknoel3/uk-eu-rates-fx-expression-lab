@@ -1,0 +1,33 @@
+# Strategy configuration stub.
+# Runtime parameters remain open until the Week 1-3 decision gates.
+
+signal:
+  status: provisional
+  frequency: weekly
+  frequency_status: provisional
+  positive_direction: uk_more_hawkish_relative_to_euro_area
+  execution_lag: next_business_day
+  timestamp_rule: inputs_observable_before_signal_formation
+
+reporting:
+  numeraire: GBP
+  status: provisional
+  preserve_native_leg_pnl: true
+  fx_return_units_internal: decimal_or_log_return
+  fx_return_units_reported: percent
+  yield_units_internal: decimal
+  yield_change_units_reported: basis_points
+  dv01_units: currency_value_per_1bp
+
+risk:
+  volatility_target: null
+  volatility_window: null
+  volatility_floor: null
+  instrument_caps: null
+  portfolio_gross_cap: null
+
+basket:
+  status: open
+  weighting_candidate: equal_risk
+  weighting_status: provisional_candidate
+  approved_components: []

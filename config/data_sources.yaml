@@ -1,0 +1,119 @@
+# Candidate data-source inventory.
+# Use null until identifiers, licences, timestamps and availability are verified.
+
+eur_gbp_spot:
+  status: null
+  source: null
+  identifier: null
+  definition: "EUR/GBP spot exchange rate; pounds per euro."
+  units: null
+  frequency: null
+  timestamp: null
+  availability: null
+  licence: null
+  return_type: "diagnostic price series"
+  known_caveats: null
+
+fx_forward_1m:
+  status: null
+  source: null
+  identifier: null
+  definition: "One-month GBP/EUR forward or forward-points series."
+  units: null
+  frequency: null
+  timestamp: null
+  availability: null
+  licence: null
+  return_type: null
+  known_caveats: "Forward data may require licensed access or a clearly labelled proxy."
+
+uk_ois_curve:
+  status: null
+  source: null
+  identifier: null
+  definition: "UK OIS curve candidate for relative policy-path signal."
+  units: null
+  frequency: null
+  timestamp: null
+  availability: null
+  licence: null
+  return_type: "signal input"
+  known_caveats: null
+
+uk_rates_instrument:
+  status: null
+  source: null
+  identifier: null
+  definition: "UK rates return instrument or curve input for rates P&L."
+  units: null
+  frequency: null
+  timestamp: null
+  availability: null
+  licence: null
+  return_type: null
+  known_caveats: "A raw yield series is not an investable return."
+
+german_2y:
+  status: null
+  source: null
+  identifier: null
+  definition: "German two-year rates leg candidate."
+  units: null
+  frequency: null
+  timestamp: null
+  availability: null
+  licence: null
+  return_type: null
+  known_caveats: null
+
+german_10y:
+  status: null
+  source: null
+  identifier: null
+  definition: "German ten-year rates leg candidate."
+  units: null
+  frequency: null
+  timestamp: null
+  availability: null
+  licence: null
+  return_type: null
+  known_caveats: null
+
+ukmpd:
+  status: null
+  source: null
+  identifier: null
+  definition: "UK monetary-policy event-study database."
+  units: null
+  frequency: "event"
+  timestamp: null
+  availability: null
+  licence: null
+  return_type: "event surprise input"
+  known_caveats: "Version, factor definitions and sign mapping must be recorded."
+
+eampd:
+  status: null
+  source: null
+  identifier: null
+  definition: "Euro-area monetary-policy event-study database."
+  units: null
+  frequency: "event"
+  timestamp: null
+  availability: null
+  licence: null
+  return_type: "event surprise input"
+  known_caveats: "Windows, factor definitions and comparability with UKMPD must be recorded."
+
+risk_proxy:
+  status: null
+  source: null
+  identifier: null
+  definition: "Pre-agreed reproducible volatility or risk-state proxy."
+  units: null
+  frequency: null
+  timestamp: null
+  availability: null
+  licence: null
+  return_type: "regime or risk input"
+  known_caveats: "Value must be observable at the strategy timestamp."

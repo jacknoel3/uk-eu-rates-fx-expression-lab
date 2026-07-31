@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Environments and local secrets
+.venv/
+.env
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Data contents.
+# Preserve directory structure and documentation, but do not commit raw,
+# licensed, confidential or large generated data files by default.
+data/raw/*
+!data/raw/.gitkeep
+data/interim/*
+!data/interim/.gitkeep
+data/processed/*
+!data/processed/.gitkeep

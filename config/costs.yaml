@@ -1,0 +1,33 @@
+# Transaction-cost scenarios.
+# Numeric values remain null until verified and approved.
+# Costs are applied to changes in position, not as a blanket annual deduction.
+
+low:
+  fx_forward_1m: null
+  eur_gbp_spot_diagnostic: null
+  uk_2y_rates_leg: null
+  german_2y_rates_leg: null
+  uk_10y_rates_leg: null
+  german_10y_rates_leg: null
+  curve_trade: null
+  basket_rebalance: null
+
+central:
+  fx_forward_1m: null
+  eur_gbp_spot_diagnostic: null
+  uk_2y_rates_leg: null
+  german_2y_rates_leg: null
+  uk_10y_rates_leg: null
+  german_10y_rates_leg: null
+  curve_trade: null
+  basket_rebalance: null
+
+stressed:
+  fx_forward_1m: null
+  eur_gbp_spot_diagnostic: null
+  uk_2y_rates_leg: null
+  german_2y_rates_leg: null
+  uk_10y_rates_leg: null
+  german_10y_rates_leg: null
+  curve_trade: null
+  basket_rebalance: null
