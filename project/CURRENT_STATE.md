@@ -4,7 +4,7 @@ Last updated: 2026-10-06
 
 ## Project week
 
-Week 4 completed. Next reporting period: Week 5.
+Week 5 in progress. Week 4 completed; see [WEEKLY_REVIEWS.md](WEEKLY_REVIEWS.md) for progress to date.
 
 This is the single project-week counter. Weekly reviews record work completed in that week; pending milestones do not reset the counter.
 
@@ -33,6 +33,8 @@ Validate Bloomberg market-data exports and instrument feasibility using the late
 - Latest Modules Word context reconciled into the Project Bible, configuration and working decision descriptions.
 - Four-week review archive populated; roadmap and glossary consolidated into the Bible.
 - Bloomberg Terminal access guaranteed by user confirmation; no Bloomberg exports or local API connection validated yet.
+- Documentation layout simplified: Word sources in `docs/`, local literature in `docs/readings/`, and unused asset folders removed.
+- Seven-paper literature review completed in Bible order; concise findings, limitations and project implications recorded in `docs/research_notes.md`.
 
 ## In progress
 
