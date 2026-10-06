@@ -2,13 +2,13 @@
 
 This file summarises the candidate trade expressions from [project_bible.md](project_bible.md) and [tradable_assets_source.md](tradable_assets_source.md). Before implementing any instrument or P&L calculation, read [conventions.md](conventions.md) and [../project/DECISIONS.md](../project/DECISIONS.md).
 
-The practical module blueprint is integrated into Section 3 of [project_bible.md](project_bible.md). Module A and Module B supply two information structures for the same relative-policy view; the instruments below are where the view is expressed and where P&L is earned. Module C compares and attributes the results.
+Section 3 of [project_bible.md](project_bible.md) defines the common weekly signal and instrument mechanics. The instruments below are where that view is expressed and P&L is earned, subject to the decision register’s approval gates.
 
 ## Expression Universe And Priority
 
 | Expression | Project role | Priority |
 |---|---|---|
-| EUR/GBP spot | Diagnostic for currency direction and event response; not the preferred funded strategy | Keep, diagnostic |
+| EUR/GBP spot | Diagnostic for currency direction; not the preferred funded strategy | Keep, diagnostic |
 | One-month EUR/GBP forward / long-GBP exposure | Main tradable FX expression; spot plus forward/carry return | Core headline candidate, conditional on data gate |
 | UK-Germany 2Y rates spread | Main policy-sensitive rates expression; DV01-balanced | Core headline candidate |
 | UK-Germany 10Y rates spread | Long-end comparison with term-premium, fiscal and supply contamination | Secondary, data-gated |
@@ -91,7 +91,7 @@ FX risk sentiment, growth, inflation credibility, liquidity, forward data availa
 
 Observed one-month forward or forward points from a reproducible licensed source; otherwise a transparent CIP-based proxy may be considered and labelled.
 
-For Module A, the selected primary maturity-management convention is weekly constant-maturity 1M forward reset. At each weekly rebalance, mark and economically unwind the existing residual-maturity forward using the current matching forward rate for its original settlement date, then enter a fresh 1M forward at the new risk-scaled target notional. Do not value a three-week-remaining forward using today's fresh 1M forward rate.
+For the weekly strategy, the selected primary maturity-management convention is weekly constant-maturity 1M forward reset. At each weekly rebalance, mark and economically unwind the existing residual-maturity forward using the current matching forward rate for its original settlement date, then enter a fresh 1M forward at the new risk-scaled target notional. Do not value a three-week-remaining forward using today's fresh 1M forward rate.
 
 The pre-specified robustness implementation is monthly forward roll with weekly intra-month notional resizing at a common settlement date. This is subordinate to the primary weekly constant-tenor reset and must not be selected based on realised Sharpe.
 
@@ -113,7 +113,7 @@ CANDIDATE. It is the main candidate FX trading expression, pending data feasibil
 
 ### Open questions
 
-Exact source, identifier, fixing time, quote convention, return formula, transaction-cost values and availability are OPEN. The Module A forward maturity/rebalancing convention is FROZEN in [../project/DECISIONS.md](../project/DECISIONS.md).
+Exact source, identifier, fixing time, quote convention, return formula, transaction-cost values and availability are OPEN. The forward maturity/rebalancing convention is FROZEN in [../project/DECISIONS.md](../project/DECISIONS.md).
 
 ## UK-Germany Two-Year Rates Spread
 
@@ -141,7 +141,7 @@ Future growth, inflation, expected policy path beyond the next decision, impleme
 
 Observed government-bond futures if clean and reproducible; modelled constant-maturity zero-coupon fallback/robustness; DV01 approximation diagnostic only.
 
-The latest working preference is actual government-bond futures, with synthetic constant-maturity fallback/robustness and DV01 approximation diagnostic only. Bible Section 3.4.7 defines target-based resizing, current observable contract/CTD DV01 in a common currency, maturity drift and provisional roll rules. Bloomberg Terminal access is guaranteed, but contract/history validation and D010 approval remain outstanding.
+The latest working preference is actual government-bond futures, with synthetic constant-maturity fallback/robustness and DV01 approximation diagnostic only. Bible Section 3.4.6 defines target-based resizing, current observable contract/CTD DV01 in a common currency, maturity drift and provisional roll rules. Bloomberg Terminal access is guaranteed, but contract/history validation and D010 approval remain outstanding.
 
 ### Required P&L components
 
@@ -185,7 +185,7 @@ Long-term inflation expectations, government borrowing and supply, fiscal credib
 
 Same hierarchy as the 2Y rates expression: observed futures preferred, synthetic constant-maturity fallback/robustness, DV01 approximation diagnostic only.
 
-Apply the futures-first working hierarchy and maintenance rules in Bible Section 3.4.7. Exact long-end contract mapping and risk history remain unverified.
+Apply the futures-first working hierarchy and maintenance rules in Bible Section 3.4.6. Exact long-end contract mapping and risk history remain unverified.
 
 ### Required P&L components
 
@@ -215,7 +215,7 @@ Conditional. A hawkish BoE may flatten the curve if the front end rises sharply,
 
 ### Position for a relatively hawkish UK view
 
-OPEN for production approval under D011. The latest working hypothesis is short UK 2Y / long UK 10Y against long German 2Y / short German 10Y, testing greater UK flattening. Bible Section 3.4.8 specifies the mechanism, within-country DV01 balance, comparable country risk and required sign scenarios; no production approval is inferred.
+OPEN for production approval under D011. The latest working hypothesis is short UK 2Y / long UK 10Y against long German 2Y / short German 10Y, testing greater UK flattening. Bible Section 3.4.7 specifies the mechanism, within-country DV01 balance, comparable country risk and required sign scenarios; no production approval is inferred.
 
 ### Main return drivers
 
@@ -257,7 +257,7 @@ One additional curve variant may be run as stretch work after methodology freeze
 
 Portfolio combining approved expressions to test whether diversification improves stability across channels.
 
-The basket belongs in Module C. It is not a third macro signal and should not be built before the standalone expressions, return labels, costs and attribution have been validated.
+The basket expresses the same weekly signal and should be built only after the standalone expressions, return labels, costs and attribution have been validated.
 
 ### Macro view represented
 
@@ -281,7 +281,7 @@ Equal-risk weighting is the preferred candidate. It is not automatically a froze
 
 Start with the one-month forward and 2Y spread if both pass their gates. Add 10Y or curve exposure only after standalone validation, diversification evidence and explicit approval in [../project/DECISIONS.md](../project/DECISIONS.md). Do not automatically include every validated expression.
 
-Bible Section 3.4.9 records the intended core, separate 10Y/curve extension questions, full four-expression diagnostic and netting of shared underlying targets. Assess extensions on development/walk-forward diversification, drawdown/regime stability and incremental net-cost evidence. Word freeze wording does not override D012's OPEN membership status.
+Bible Section 3.4.8 records the intended core, separate 10Y/curve extension questions, full four-expression diagnostic and netting of shared underlying targets. Assess extensions on development/walk-forward diversification, drawdown/regime stability and incremental net-cost evidence. Word freeze wording does not override D012's OPEN membership status.
 
 ### Required P&L components
 
@@ -301,12 +301,7 @@ Approved components, final weighting, portfolio caps, volatility target, costs a
 
 ## Required Attribution
 
-- FX: spot-price movement, carry/forward points, transaction costs and scaling effect.
-- Rates: UK leg, German leg, carry/roll, convexity approximation where relevant and costs.
-- Basket: component P&L, risk contribution and diversification benefit.
-- Timing: event days versus non-event days; immediate versus post-event horizon.
-- State: high/low volatility, tightening/easing, normal/stress periods and pre-specified structural eras.
-- Combined A+B implementation, if built: Module A baseline, Module B overlay, exposure netting, common risk cap, overlapping holding periods and no double attribution.
+Use the consolidated attribution requirements in [Project Bible Section 15.1](project_bible.md#151-required-attribution). Preserve FX spot/carry/cost/scaling, native country and maturity legs, basket contributions, policy-meeting concentration and pre-specified regimes. Components must reconcile to total P&L.
 
 ## Open Implementation Decisions
 

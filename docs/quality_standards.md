@@ -4,49 +4,11 @@
 
 The project is not judged by whether it discovers a high Sharpe ratio. It is judged by whether it constructs the instruments correctly, uses information honestly, compares expressions fairly, explains mechanisms clearly and remains reproducible.
 
-## Success Standards
+## Success Standards And Definition Of Done
 
-### Minimum Professional Standard
+[Project Bible Sections 28-31](project_bible.md#28-success-criteria) hold the consolidated success standards, evidence required for completion and red-team checklist. Correct signs, units, timestamps and return labels; common ex-ante risk; gross/net results; reconciled attribution; complete robustness and holdout evidence; and independent reproducibility are required. There is no return or Sharpe threshold for success.
 
-- Every core return series has correct sign, units, timing and an explicit actual/synthetic/proxy label.
-- The full pipeline is reproducible from documented commands.
-- No unresolved look-ahead, calendar or cost-application issue remains.
-- All expressions are compared on a common ex-ante risk basis and gross/net results are shown.
-- The event module separates contemporaneous response from implementable post-event trading.
-- Module A event-day P&L is labelled as P&L from a pre-existing weekly position, not as proof of pre-event surprise prediction.
-- Any combined Module A plus Module B portfolio nets overlapping exposures, applies a common risk cap and prevents double attribution.
-- The report discloses limitations and failed tests.
-
-### Strong Project Standard
-
-- Slow-divergence and event modules produce a coherent comparative picture or explain why they differ.
-- Attribution identifies mechanisms behind performance, drawdowns and ranking changes.
-- The robustness matrix and holdout prevent the final story from resting on one specification.
-- A new user can navigate the dashboard and understand current signal and historical evidence.
-- Both collaborators can explain all major modules without relying on a black box.
-
-### Exceptional Project Standard
-
-- The project produces at least one non-obvious, mechanism-based insight about when different expressions work or fail.
-- The result remains useful even when performance is weak because the system diagnoses contamination, costs and regime dependence.
-- Independent clean-environment replication reproduces principal figures and tables.
-- The code, report and dashboard tell the same story and use the same frozen configuration.
-- The final presentation anticipates sceptical markets questions and answers them with evidence.
-
-## Definition Of Done
-
-| Area | Evidence required |
-|---|---|
-| Research design | Charter, hypotheses, benchmark ladder, locked holdout and methodology-freeze record |
-| Data | Complete dictionary, source identifiers, raw snapshots, missingness report and caveat labels |
-| Instruments | Formulas, manual scenarios, automated tests and independent review |
-| Signals | Timing contract, component definitions and full specification log |
-| Backtest | Toy reconciliation, risk/cost configuration, gross/net outputs and no leakage findings |
-| Events | Factor map, event counts, contemporaneous/post-event separation and influence diagnostics |
-| Robustness | Complete pre-agreed matrix, holdout result and failure-case memo |
-| Attribution | Components reconcile to total P&L within tolerance |
-| Engineering | Clean clone builds principal outputs in a fixed environment |
-| Communication | Final dashboard, note, README, demo and Q&A pack |
+The same weekly signal must support a fair comparison with differences between expressions explained. Policy-meeting P&L comes from the existing weekly position and must reconcile with non-meeting P&L. Report limitations, uncertainty and failed tests. Both collaborators must be able to explain the full calculation chain, and code, report and dashboard must use the same frozen configuration.
 
 ## Required Testing
 
@@ -78,6 +40,6 @@ Raw data is immutable. Transformations occur in code. Config files hold sample d
 
 ## Communication And Claim Standards
 
-State whether each result is descriptive, predictive, causal/event-study or implementable. Use conditional language when uncertainty or regime dependence is material. Never call a synthetic return a traded return. Report sample counts, uncertainty and full relevant comparisons beside headline metrics.
+State whether each result is descriptive, predictive or implementable. Use conditional language when uncertainty or regime dependence is material. Never call a synthetic return a traded return. Report sample counts, uncertainty and full relevant comparisons beside headline metrics.
 
-Do not claim contemporaneous event-window responses were tradable before the announcement. Do not treat carry-only, trend-only, rate-level-only, constant-direction or unscaled benchmarks as optional decorations when they are central to the module being evaluated.
+Use the complete benchmark ladder in [Project Bible Section 4.1](project_bible.md#41-benchmark-ladder); benchmark comparisons use consistent timing, risk and cost assumptions.

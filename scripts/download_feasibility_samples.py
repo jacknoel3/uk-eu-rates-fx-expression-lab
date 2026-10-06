@@ -47,11 +47,6 @@ SAMPLES = {
     "ecb_governing_council_calendar.html": (
         "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html"
     ),
-    "ukmpd.xlsx": (
-        "https://www.bankofengland.co.uk/-/media/boe/files/working-paper/2023/"
-        "measuring-monetary-policy-in-the-uk-the-ukmpesd.xlsx"
-    ),
-    "eampd.xlsx": "https://www.ecb.europa.eu/pub/pdf/annex/Dataset_EA-MPD.xlsx",
     "cboe_vix_history.csv": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
 }
 

@@ -32,7 +32,7 @@ Spot Rate role in the project: mainly a diagnostic rather than the preferred i
 
 Useful to answer: “Did sterling strengthen or weaken when relative policy view changed?”
 
-**2. One-month GBP/EUR FX forward**
+**2. One-month EUR/GBP FX forward**
 
 Main tradable FX expression.
 
@@ -108,7 +108,7 @@ Why include it? To test whether relative policy views transmit beyond the short 
 
 For example:
 
-- the two-year trade may react strongly and immediately to a policy surprise;
+- the two-year trade may respond more directly to relative policy-path repricing;
 
 - the ten-year trade may react more slowly;
 
@@ -152,7 +152,7 @@ For example, the strategy might take a position that benefits if the UK curve fl
 
 That could involve combinations such as: Short UK 2Y, Long UK 10Y vs Long German 2Y, Short German 10Y
 
-The project bible deliberately does not prescribe one curve position yet.
+This relative UK-flattener hypothesis is documented in the Project Bible; production approval remains OPEN under D011, pending data, economic review and numerical sign tests.
 
 A relatively hawkish Bank of England does not always produce the same curve reaction:
 
@@ -170,7 +170,7 @@ The curve trade should therefore only be included once we can explain:
 
 Portfolio combining several of the previous expressions. e.g.:
 
-- the GBP/EUR forward;
+- the EUR/GBP forward;
 
 - the UK–Germany two-year rates trade;
 
@@ -234,13 +234,11 @@ The clearest way to understand the project is:
 
 - **Basket:** Can several imperfect expressions be combined into a more stable one?
 
-**  **
-
 **Implementation Hierarchy: What instruments could sit underneath rates trades?**
 
 “UK–Germany two-year spread” describes the economic exposure but still need to choose the instrument used to create that exposure.
 
-**A. Futures or observed total-return instruments**
+**Futures or observed total-return instruments**
 
 - UK government bond futures;
 
@@ -252,7 +250,7 @@ The clearest way to understand the project is:
 
 These are the closest to real historical tradable returns. However, matching exact two-year and ten-year exposures may not always be straightforward. Some futures contracts represent a basket of eligible bonds rather than one constant-maturity yield.
 
-**B. Synthetic zero-coupon bonds**
+**Synthetic zero-coupon bonds**
 
 For example, using a two-year zero rate, you can estimate the value of a theoretical bond that pays £1 in two years. As time moves forward:
 
@@ -266,9 +264,9 @@ For example, using a two-year zero rate, you can estimate the value of a theoret
 
 This produces a more economically meaningful return than simply using the daily change in a yield. But it is still a: **Modelled synthetic return**, not a directly observed market trade.
 
-**C. DV01 approximation**
+**DV01 approximation**
 
-The simplest fallback is to approximate P&L from yield changes:
+A diagnostic approximation checks P&L signs from yield changes:
 
 Approximate P&L ≈ −Duration × change in yield
 

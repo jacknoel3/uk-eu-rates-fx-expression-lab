@@ -1,13 +1,12 @@
 # Dashboard
 
-The intended dashboard has seven pages:
+The intended dashboard has six pages:
 
 1. Current state
 2. Expression comparison
-3. Events
-4. Attribution
-5. Regimes and failures
-6. Robustness
-7. Methodology
+3. Attribution
+4. Regimes and failures
+5. Robustness
+6. Methodology
 
-Dashboard development should not begin before the methodology freeze unless needed for a minimal diagnostic.
+Policy-meeting versus non-meeting P&L and concentration diagnostics belong in attribution and regimes. Dashboard development should not begin before the methodology freeze unless needed for a minimal diagnostic. The full specification is in [Project Bible Section 24](../docs/project_bible.md#24-dashboard-specification).

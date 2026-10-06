@@ -16,33 +16,31 @@ The lead is now employed and can contribute at most 4 hours per day. Aim for ano
 
 ## Current stage
 
-Data feasibility and instrument specification. Bloomberg exports and instrument validation remain outstanding; instrument, MVP and event gates have not passed.
+Data feasibility and instrument specification. Bloomberg exports and instrument validation remain outstanding; instrument and MVP gates have not passed.
 
 ## Current objective
 
-Validate Bloomberg market-data exports and instrument feasibility using the latest Module A/B/C working specification before substantive model development.
+Validate Bloomberg market-data exports and instrument feasibility for the weekly OIS policy-repricing strategy before substantive model development.
 
 ## Completed
 
 - Repository documentation structure created.
-- Original project source documents preserved.
-- Canonical Markdown source documents created, subject to conversion quality review.
-- Revised Module A/B/C practical specification integrated into `docs/project_bible.md`.
-- Module A 1M EUR/GBP forward maturity/rebalancing convention frozen.
-- Public-data feasibility audit and downloader created; ten historical raw sample files stored locally.
-- Latest Modules Word context reconciled into the Project Bible, configuration and working decision descriptions.
+- Project Word documents maintained alongside canonical Markdown.
+- Weekly signal and detailed instrument specification consolidated in the Markdown and Word Project Bible.
+- Weekly 1M EUR/GBP forward maturity/rebalancing convention frozen.
+- Public-data feasibility audit and downloader created; historical raw sample files stored locally.
 - Four-week review archive populated; roadmap and glossary consolidated into the Bible.
 - Bloomberg Terminal access guaranteed by user confirmation; no Bloomberg exports or local API connection validated yet.
 - Documentation layout simplified: Word sources in `docs/`, local literature in `docs/readings/`, and unused asset folders removed.
-- Seven-paper literature review completed in Bible order; concise findings, limitations and project implications recorded in `docs/research_notes.md`.
+- Five-paper literature review completed in Bible order; concise findings, limitations and project implications recorded in `docs/research_notes.md`.
 
 ## In progress
 
-- Review converted documentation.
+- Review the aligned Markdown and Word specifications.
 - Complete the remaining conventions review.
 - Validate six matched UK/EA 6M/1Y/2Y par OIS histories, observed forward/residual-tenor inputs and candidate futures prices/risk/calendars through the confirmed Bloomberg route.
 - Approve the instrument build list after data and conventions validation.
-- Freeze remaining Module A signal, Module B event-entry and basket-membership choices before holdout inspection.
+- Freeze remaining weekly signal and basket-membership choices before holdout inspection.
 
 ## Blocked
 
@@ -65,8 +63,7 @@ See [DECISIONS.md](DECISIONS.md).
 - Data identifiers and historical availability still require verification.
 - One-month observed forward remains conditional until repeatable licensed exports, exact quote/timestamp fields and original-settlement valuations are validated.
 - Guaranteed Terminal access does not verify export entitlements, histories, local API access or residual-maturity forward valuation.
-- Source packages remain scaffolding; financial tests, processed research data and trading/event results are not implemented.
-- Module B post-event entry, exit and overlapping-event rules remain open.
+- Source packages remain scaffolding; financial tests, processed research data and trading results are not implemented.
 
 ## Current task
 

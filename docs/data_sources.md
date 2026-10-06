@@ -10,7 +10,7 @@ The first source-by-source feasibility audit is recorded in [data_feasibility_au
 
 | Tier | Source type | Rule |
 |---|---|---|
-| Tier 1 | Official and reproducible | Bank of England, ECB Data Portal, Bundesbank, UKMPD and EA-MPD |
+| Tier 1 | Official and reproducible | Bank of England, ECB Data Portal and Bundesbank |
 | Tier 2 | Institutionally licensed | Bloomberg Terminal access guaranteed; validate exact data and repeatable authorised export/code-ingestion workflow |
 | Tier 3 | Public market-data services | Acceptable for supplementary diagnostics after spot-checking against official or institutional sources |
 | Tier 4 | Manual or scraped data | Use only when unavoidable, with immutable raw snapshots, source date and explicit caveat |
@@ -48,9 +48,7 @@ These quality labels are separate from the broader decision-status labels in [..
 | UK/EA matched 6M/1Y/2Y par OIS | Bloomberg | 6M/1Y primary repricing; 2Y robustness | Six explicit config rows; identifiers/timestamps/history unverified; EONIA/€STR reconciliation required |
 | UK/German government-bond futures | Bloomberg prices/risk data; official exchange calendars | Preferred 2Y/10Y instruments and reused curve legs | Conditional - four maturity-bucket mappings, contract chains, DV01/CTD and rolls unverified |
 | UK/German public curve inputs | BoE nominal/OIS spot curves; Bundesbank term-structure yields | Synthetic fallback/robustness and diagnostics | Public samples audited; return construction/compounding approval outstanding |
-| Policy rates and dates | BoE and ECB | Context and event calendar | OPEN - decision timestamps and special-meeting handling to be verified |
-| UK event surprises | UKMPD | BoE event module | OPEN - version and factor sign map to be recorded |
-| ECB event surprises | EA-MPD | ECB event module | OPEN - version, windows and factor mapping to be recorded |
+| Policy rates and dates | BoE and ECB | Policy-meeting exposure and P&L concentration diagnostics | OPEN - decision timestamps and special-meeting handling to be verified |
 | Volatility / risk proxy | Pre-agreed reproducible source | Regime analysis | OPEN - observability timestamp required |
 
 ## Forward-Data Limitations
@@ -62,10 +60,6 @@ Guaranteed Terminal access makes observed sourcing the working route; it does no
 ## UK And German Curve Data
 
 Official BoE nominal/OIS spot curves and Bundesbank constant-residual-maturity term-structure yields support public validation, synthetic construction and diagnostics. Keep these distinct from Bloomberg matched par OIS and individual-contract futures histories. The data gate must establish the approved rates-return method and labels; a yield input is not an investable return.
-
-## UKMPD And EA-MPD
-
-UKMPD and EA-MPD must be treated as distinct event-study databases with separate windows, factor definitions, updates and signs. Record database versions because event databases can be revised or extended.
 
 ## Timestamps, Licences And Structural Breaks
 

@@ -2,7 +2,7 @@
 
 Notebooks are for exploration, diagnostics and presentation. Production calculations belong in `src/`, and important logic may not exist only in a notebook.
 
-Notebooks should use project modules and saved configuration, and names should reflect stage and purpose.
+Notebooks should use the source package and saved configuration, and names should reflect stage and purpose.
 
 | Folder | Purpose |
 |---|---|

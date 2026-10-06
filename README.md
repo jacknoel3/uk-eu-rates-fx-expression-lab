@@ -11,16 +11,14 @@ When UK monetary-policy expectations become more hawkish or dovish relative to e
 1. Read [AGENTS.md](AGENTS.md).
 2. Read [project/CURRENT_STATE.md](project/CURRENT_STATE.md).
 3. Read [project/DECISIONS.md](project/DECISIONS.md).
-4. Read [docs/project_bible.md](docs/project_bible.md), especially Section 3 for the revised Module A/B/C architecture.
+4. Read [docs/project_bible.md](docs/project_bible.md), especially Section 3 for the weekly strategy specification.
 5. Use [docs/index.md](docs/index.md) to find the relevant detailed documentation.
 
-## Research Modules
+## Research Design
 
-- Module A studies slower weekly UK/euro-area policy divergence.
-- Module B studies identifiable BoE and ECB monetary-policy event surprises using UKMPD and EA-MPD.
-- Module C compares expressions on a common risk basis and explains differences through attribution, regimes and robustness.
+One weekly OIS-based relative policy-repricing signal drives all approved expressions: fixed equal weights on lagged-standardised one-week/four-week changes in matched UK-minus-euro-area 6M/1Y par OIS differentials. The 2Y tenor is a pre-specified horizon robustness check; levels, carry and trend remain separate benchmarks or diagnostics.
 
-These modules are analytical workstreams, not necessarily one file per module. Module A and Module B generate two information structures for the same relative-policy view; the candidate or approved FX and rates expressions are where that view is tested. Module C is the comparison, attribution and explanation layer.
+Signals are formed after eligible Thursday-close inputs are observable, with Friday-close execution as the provisional working convention. Compare expressions on a common ex-ante risk basis, using lagged sizing and explicit costs. Attribution, regimes, robustness, basket evaluation and conditional conclusions form part of the same research design. [The decision register](project/DECISIONS.md) controls status and remaining gates.
 
 ## Candidate Trade Expressions
 
@@ -33,9 +31,9 @@ These modules are analytical workstreams, not necessarily one file per module. M
 
 ## Current Stage
 
-Four reconstructed reporting weeks of research/design are recorded in [project/WEEKLY_REVIEWS.md](project/WEEKLY_REVIEWS.md). [project/CURRENT_STATE.md](project/CURRENT_STATE.md) maintains the single project-week counter and separately records implementation phase and pending milestones. The repository has a public-data feasibility downloader and ten historical raw sample files locally; source packages remain scaffolding, without a validated instrument engine, backtest, event results or dashboard.
+Four reconstructed reporting weeks of research/design are recorded in [project/WEEKLY_REVIEWS.md](project/WEEKLY_REVIEWS.md). [project/CURRENT_STATE.md](project/CURRENT_STATE.md) maintains the single project-week counter and separately records implementation phase and pending milestones. The repository has a public-data feasibility downloader and historical raw sample files locally; source packages remain scaffolding, without a validated instrument engine, backtest or dashboard.
 
-Bloomberg Terminal access is guaranteed for the project. The working market-data route is documented terminal exports with reproducible code ingestion; exact OIS, forward/residual-tenor and futures histories still require validation, and local API access is not assumed. The latest Modules specification is integrated into the Bible. Its milestone plan and glossary are maintained there to reduce duplicate documentation.
+Bloomberg Terminal access is guaranteed for the project. The working market-data route is documented terminal exports with reproducible code ingestion; exact OIS, forward/residual-tenor and futures histories still require validation, and local API access is not assumed. The weekly strategy specification is integrated into the Bible. Its milestone plan and glossary are maintained there to reduce duplicate documentation.
 
 The lead can contribute at most four hours a day alongside employment. The planning aim is another 8-10 weeks after Week 4, with completion governed by validation rather than a fixed deadline. The [remaining milestone plan](docs/project_bible.md#16-timeline-at-a-glance) assumes 16-20 hours across 4-5 available days per week; actual capacity and unresolved gates guide progress.
 

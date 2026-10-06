@@ -17,20 +17,18 @@ Before making material changes, read:
 1. [project/CURRENT_STATE.md](project/CURRENT_STATE.md)
 2. [project/DECISIONS.md](project/DECISIONS.md)
 3. [docs/index.md](docs/index.md)
-4. [docs/project_bible.md](docs/project_bible.md), especially Section 3 for the revised Module A/B/C practical architecture
+4. [docs/project_bible.md](docs/project_bible.md), especially Section 3 for the weekly strategy specification
 5. The topic-specific documentation relevant to the task
 
-For changes affecting economic definitions, signs, returns, timing, risk, transaction costs, backtesting, event studies or attribution, also consult [docs/project_bible.md](docs/project_bible.md).
+For changes affecting economic definitions, signs, returns, timing, risk, transaction costs, backtesting or attribution, also consult [docs/project_bible.md](docs/project_bible.md).
 
 Do not treat an explanatory candidate in the documentation as a frozen decision. The status recorded in [project/DECISIONS.md](project/DECISIONS.md) takes priority.
 
-## Research modules
+## Research design
 
-- Module A: slow-moving UK/euro-area policy-divergence analysis.
-- Module B: BoE and ECB monetary-policy event analysis using UKMPD and EA-MPD.
-- Module C: risk-normalised expression comparison, attribution, regimes and robustness.
+Use one weekly OIS-based relative policy-repricing signal across approved trade expressions. The working signal is the equal-weight composite of lagged-standardised 1w/4w changes in matched UK-minus-euro-area 6M/1Y par OIS differentials, with 2Y horizon robustness (D015).
 
-These are research workstreams, not necessarily individual Python files. Module A and Module B generate two information structures for the same relative-policy view; candidate or approved expressions are where the view is tested; Module C compares, attributes and explains the results.
+Risk-normalised comparison, attribution, costs, regimes, robustness, basket evaluation and conditional conclusions are integral to this project. Section 4.1 of the Bible defines the benchmarks; Sections 13-15 define the evaluation rules. Production approval and unresolved parameters remain controlled by the decision register.
 
 ## Core conventions
 

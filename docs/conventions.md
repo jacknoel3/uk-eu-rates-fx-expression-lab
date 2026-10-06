@@ -13,7 +13,7 @@ This file records economic signs, units and timing conventions extracted from th
 | Rates direction | PROVISIONAL/economic default | Short UK duration / long German duration for a relatively hawkish UK view |
 | Rates leg balance | PROVISIONAL/default | DV01- or duration-balanced |
 | Reporting numeraire | PROVISIONAL | GBP for headline P&L/returns; preserve native leg P&L and attribution components separately |
-| Slow-module frequency | PROVISIONAL/default | Weekly signal and rebalance; daily data may support construction and risk estimates |
+| Strategy frequency | PROVISIONAL/default | Weekly signal and rebalance; daily data may support construction and risk estimates |
 | Execution lag | PROVISIONAL | Form weekly signals after inputs are observable; execute next business day |
 | FX return units | PROVISIONAL | Store decimal/log returns internally; report in percent |
 | Rates units | PROVISIONAL | Store yields in decimal internally; report yield changes in basis points |
@@ -62,9 +62,9 @@ Every return series must state its numeraire. This convention should be frozen o
 
 PROVISIONAL. Form the weekly signal only after all required inputs are observable, then assume execution at the next business day. Use lagged volatility, costs and regime states. Do not assume execution at a close that is also used to compute the signal unless an executable pre-close convention is proven.
 
-For close-only cross-asset Module A data, the working primary convention is Thursday-close signal formation followed by Friday-close execution. Friday-close signal to Monday-close execution and a midweek schedule are timing robustness checks, not alternative primary timings to select by realised Sharpe.
+For close-only cross-asset strategy data, the working primary convention is Thursday-close signal formation followed by Friday-close execution. Friday-close signal to Monday-close execution and a midweek schedule are timing robustness checks, not alternative primary timings to select by realised Sharpe.
 
-Module A keeps its latest weekly target through scheduled BoE and ECB meetings. It does not automatically flatten before the event and does not add a separate pre-event surprise bet. Module B may enter a surprise-driven trade only after the surprise is observable and the first defensible post-event price is available.
+The strategy keeps its latest weekly target through scheduled BoE and ECB meetings. Meetings do not trigger automatic flattening or an additional position. Eligible OIS repricing feeds the next scheduled weekly signal; meeting-day P&L belongs to the existing position (D025).
 
 ## Units And Basis Points
 

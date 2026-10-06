@@ -6,7 +6,7 @@ A rigorous plan for building, testing, documenting and presenting a Python-based
 
 | **Document status** | Working constitution for the project |
 |----|----|
-| **Version** | 1.1 |
+| **Version** | 1.2 |
 | **Date** | Updated 6 October 2026; founded 24 July 2026 |
 | **Planning horizon** | Four project weeks completed; aim for another 8-10 weeks, with completion governed by validated milestones |
 | **Lead capacity** | Maximum 4 hours per day alongside employment; planning assumption of 16-20 hours across 4-5 available days per week, including review and documentation |
@@ -19,7 +19,7 @@ A rigorous plan for building, testing, documenting and presenting a Python-based
 
 This is the canonical operating document for the project. It should be treated as the shared source of truth for scope, decisions, deadlines, quality standards and the final story. It is intentionally more detailed than a normal roadmap because it is designed to prevent avoidable project failure: unclear signs, weak data, duplicated work, backtest leakage, scope creep and last-week documentation panic.
 
-2026-10-06 context update: Section 3 incorporates the latest [Modules A/B/C Word specification](UK_EU_Rates_FX_Modules_A_B_C_Practical_Specification_Signal_Updated.docx), including the OIS composite, futures maintenance, relative-curve hypothesis and basket ladder. Bloomberg Terminal access for the project is guaranteed, as confirmed by the user; series histories, export entitlements and local API access have not yet been validated. The current status in [../project/DECISIONS.md](../project/DECISIONS.md) remains controlling: recording a working specification does not approve a production instrument or freeze an open choice.
+Section 3 defines the weekly OIS composite, instrument maintenance, relative-curve hypothesis and basket ladder. The [Word Bible](project_bible_original.docx) contains the same specification. Bloomberg Terminal access for the project is guaranteed, as confirmed by the user; series histories, export entitlements and local API access have not yet been validated. The current status in [../project/DECISIONS.md](../project/DECISIONS.md) remains controlling: recording a working specification does not approve a production instrument or freeze an open choice.
 
 Use one project-week counter across the repository, maintained in [CURRENT_STATE.md](../project/CURRENT_STATE.md). The [weekly review archive](../project/WEEKLY_REVIEWS.md) records completed work against that counter. Track implementation phase and milestone status separately: outstanding data or instrument work does not return the project to an earlier week. The 2026-10-06 capacity revision (D030) supersedes the original calendar-based schedule and freeze dates. Sections 16-18 hold the remaining milestone plan and capacity assumptions; the glossary remains in Appendix D. These stay here rather than in separate summary files.
 
@@ -31,7 +31,7 @@ Use one project-week counter across the repository, maintained in [CURRENT_STATE
 | **Project week** | Maintained in [CURRENT_STATE.md](../project/CURRENT_STATE.md). | Advance consistently with weekly reviews; report pending milestones separately. |
 | **Core document owner** | Lead researcher | Update after each weekly review. |
 | **Decision authority** | Joint agreement; lead breaks ties on scope and schedule | Record all material decisions in the decision log. |
-| **Methodology freeze** | Readiness gate after instrument, MVP, event and development-validation checks pass, before final holdout inspection (D019). | Record the actual freeze date and configuration; afterwards allow bug fixes and pre-agreed tests only. |
+| **Methodology freeze** | Readiness gate after instrument, MVP and development-validation checks pass, before final holdout inspection (D019). | Record the actual freeze date and configuration; afterwards allow bug fixes and pre-agreed tests only. |
 
 ## How to use this document
 
@@ -98,25 +98,11 @@ The distinctive feature of the project is that the macro view is held broadly co
 
 ## 1.1 Operational definition of cleanest
 
-An expression is not automatically clean because it has the highest historical return. The project should evaluate cleanliness through a balanced scorecard:
-
-- Sensitivity to the intended relative policy-divergence signal or surprise.
-
-- Low contamination from unrelated risks such as global risk sentiment, fiscal shocks, term premium or broad dollar moves.
-
-- Favourable ex-ante risk efficiency after volatility normalisation.
-
-- Reasonable drawdowns, tail losses and performance concentration.
-
-- Implementability after transaction costs, carry, roll and turnover.
-
-- Stability across samples, event types, horizons and economic regimes.
-
-- Interpretability: the result can be explained using market mechanics rather than post-hoc storytelling.
+Cleanliness is a balanced assessment of intended signal sensitivity, unrelated risk exposure, common-risk performance, drawdowns, costs, stability and interpretability. Section 14 defines the comparison scorecard; Section 15 defines the attribution and robustness evidence. The highest historical return alone does not establish the cleanest expression.
 
 ## 1.2 Project thesis
 
-The expected final story is comparative and conditional, not absolute. Different instruments may be best at different horizons and under different states of the world. Two-year rates may react most directly to policy surprises; FX forwards may express slower repricing while incorporating carry; long-end spreads may contain more fiscal and term-premium noise; and an equal-risk basket may sacrifice peak performance in exchange for greater stability. These are hypotheses, not preordained conclusions.
+The expected final story is comparative and conditional, not absolute. Different instruments may be best at different horizons and under different states of the world. Two-year rates may provide the most direct policy-path exposure; FX forwards may express multiweek repricing while incorporating carry; long-end spreads may contain more fiscal and term-premium noise; and an equal-risk basket may sacrifice peak performance in exchange for greater stability. These are hypotheses, not preordained conclusions.
 
 # 2. Scope hierarchy
 
@@ -124,7 +110,7 @@ Scope discipline protects the quality of the project within the lead's available
 
 | **Category** | **Meaning** | **Items** |
 |----|----|----|
-| **Core - must ship** | Required for the project to answer its central question. | Reproducible data pipeline; validated returns; slow divergence module; BoE/ECB event module; risk-normalised backtest; costs; attribution; robustness; dashboard; research note. |
+| **Core - must ship** | Required for the project to answer its central question. | Reproducible data pipeline; validated returns; weekly OIS policy-repricing signal; risk-normalised backtest; costs; attribution; robustness; dashboard; research note. |
 | **Core candidate - passes data gate** | Included only after data, conventions and return construction are defensible and recorded for instrument approval. | One-month FX forward; two-year rates spread; ten-year rates spread; one relative curve expression; equal-risk rates-FX basket. |
 | **Stretch - only if green** | Started only after methodology freeze and core validation, when core delivery remains achievable within available capacity. | Additional curve variant; richer current-signal monitor; one modest interactive extension. Futures are now the preferred data-gated core rates implementation, not automatically stretch work. |
 | **Out of scope** | Explicitly excluded from the core project. | FX options; machine learning; multi-country expansion; intraday execution; complex portfolio optimisation; live automated trading; dozens of technical indicators. |
@@ -143,39 +129,23 @@ Scope discipline protects the quality of the project within the lead's available
 </tbody>
 </table>
 
-# 3. Research modules
+# 3. Weekly strategy specification
 
 The primary comparison may contain at most one approved relative curve trade. Under D024, one additional curve variant may be pre-authorised before the methodology freeze as secondary stretch work, activated only after the freeze when every core gate is green and core delivery remains achievable within available capacity. One stretch item is the maximum. It cannot alter the primary signal, comparison set, costs, robustness plan, basket membership or headline selection rule after results are known.
 
-This section integrates the latest Module A/B/C practical specification. The modules are the crux of the project and should not be treated as three separate trading systems. Module A and Module B generate two different forms of the same UK-versus-euro-area policy view; the candidate or approved FX and rates expressions are the markets in which that view is tested. Module C is the comparative and explanatory layer.
+The project uses one weekly OIS-based relative policy-repricing signal across approved FX, rates, curve and basket expressions. Signals and positions are refreshed weekly, P&L is recorded daily, and comparison, attribution, costs, regimes and robustness are integral to the research.
 
-The project holds the broad economic theme constant while changing how the view is measured and expressed.
-
-| **Module** | **Economic object** | **Timing** | **Main output** |
-|----|----|----|----|
-| **A - slow divergence** | Market-implied relative policy path and recent repricing. | Weekly signal and rebalance; daily P&L. | Tradable multiweek strategies across data-gated FX, rates, curve and basket expressions. |
-| **B - event surprises** | Identified unexpected BoE/ECB announcement shocks. | Event-driven; immediate and post-event horizons. | Shock-response evidence plus implementable continuation/reversal strategies. |
-| **C - comparison and attribution** | Outputs from Modules A and B. | Ex post analytical layer. | Ranking, mechanism, attribution, robustness and conditional conclusions. |
-
-The recommended minimum viable project is deliberately narrow:
-
-- Use a transparent OIS-based repricing signal in Module A.
-
-- Apply it first to the one-month EUR/GBP forward, traded as long-GBP / short-EUR exposure when the signal is positive, and the UK-Germany two-year rates spread.
-
-- Analyse UKMPD and EA-MPD surprise factors in Module B.
-
-- Use Module C to determine whether FX, short rates, long rates, curves or a diversified basket carry the intended view most cleanly.
+The minimum viable project applies the common signal first to the one-month EUR/GBP forward and the DV01-balanced UK-Germany 2Y rates spread. The 10Y spread and one relative curve trade remain data-gated candidates; evaluate a transparent basket only after the standalone expressions are validated.
 
 Bloomberg Terminal access is guaranteed for the project. Bloomberg is the working primary market-data route for observed forwards, matched OIS and rates futures. The one-month forward remains conditional until its exported history, quote convention, timestamp and return construction are approved. A documented terminal export with reproducible code ingestion is acceptable; a direct API connection on this machine is not assumed. A CIP-based forward is a labelled proxy unless the decision register explicitly approves it for the primary comparison.
 
-## 3.1 Common architecture: five buckets
+## 3.1 Data and implementation roles
 
 Every series or instrument must be assigned to one of five buckets. This avoids confusing information used to form the view with assets used to earn P&L. A market rate can be useful information for the signal without being the asset whose return is booked, and a tradable asset can also be used as a diagnostic without belonging in the main strategy.
 
 | **Bucket** | **Question answered** | **Recommended contents** |
 |----|----|----|
-| **Signal-definition data** | What is the model's economic view? | UK and euro-area OIS-implied policy paths; changes in their matched differential; UKMPD and EA-MPD surprise factors. |
+| **Signal-definition data** | What is the model's economic view? | UK and euro-area matched par OIS rates and one-week/four-week changes in their differential. |
 | **Tradable expressions** | Where is the position entered and P&L earned? | One-month EUR/GBP forward / long-GBP exposure; UK-Germany 2Y spread; UK-Germany 10Y spread; one approved relative curve trade; approved basket, subject to current decision status. |
 | **Diagnostics** | What happened in the underlying market? | EUR/GBP spot; raw yields; policy rates; individual UK and German legs; event-day price changes. |
 | **Benchmarks** | Did the model add skill beyond a simple rule or passive premium? | No position; constant direction; carry-only; trend-only; level-only; raw versus volatility-targeted; equal weight versus equal risk. |
@@ -195,22 +165,22 @@ Positive always means relatively hawkish UK. A positive signal means UK policy e
 
 | **Expression** | **Project role** | **Priority and current caution** |
 |----|----|----|
-| **EUR/GBP spot** | Diagnostic for currency direction and event response; not the preferred funded strategy. | Keep as diagnostic. |
+| **EUR/GBP spot** | Diagnostic for currency direction; not the preferred funded strategy. | Keep as diagnostic. |
 | **One-month EUR/GBP forward / long-GBP exposure** | Main tradable FX expression; return combines spot movement and forward/carry effect. | Core headline candidate, conditional on data gate. |
 | **UK-Germany 2Y rates spread** | Main policy-sensitive rates expression; DV01-balanced maturity-bucket exposure. | Core headline candidate; futures preferred, synthetic constant-maturity fallback/robustness. |
 | **UK-Germany 10Y rates spread** | Long-end comparison with greater term-premium, fiscal and supply contamination. | Secondary, data-gated; same futures-first hierarchy. |
 | **One relative curve trade** | Working hypothesis: relatively hawkish UK implies greater UK 2s10s flattening. | Conditional; D011 remains OPEN pending approval and sign tests. |
 | **Equal-risk rates-FX basket** | Intended core is forward plus 2Y; extensions assessed separately. | Construct last; D012 remains OPEN and components require approval. |
 
-## 3.4 Module A - slow-moving policy divergence
+## 3.4 Weekly signal and trade construction
 
-Module A asks whether gradual changes in market pricing of the BoE path relative to the ECB path can be translated into a repeatable multiweek trade. It is the calendar-based trading module: signals are refreshed weekly, positions are rebalanced weekly and returns are measured daily.
+The strategy tests whether weekly repricing of the BoE path relative to the ECB path translates into a repeatable multiweek trade. Signals and positions are refreshed weekly, and returns are measured daily.
 
 ### 3.4.1 What defines the signal
 
 The working primary signal measures repricing in matched UK SONIA and euro-area par OIS rates. A par OIS rate is the fixed rate that makes the swap against compounded overnight rates approximately zero-valued at inception. It measures market-implied policy-path pricing, including premia and technical effects, rather than a pure policy forecast. Collect daily 6M, 1Y and 2Y rates for both regions through the confirmed Bloomberg Terminal route; exact identifiers, fields, timestamps and comparable histories remain unverified.
 
-| **Input** | **Use in Module A** | **Role** |
+| **Input** | **Use in the strategy** | **Role** |
 |----|----|----|
 | **UK SONIA par OIS** | Daily 6M, 1Y and 2Y matched-tenor levels. | 6M/1Y primary; 2Y horizon robustness. |
 | **Euro-area par OIS** | Same tenors; document euro overnight benchmark continuity. | 6M/1Y primary; 2Y horizon robustness. |
@@ -219,6 +189,8 @@ The working primary signal measures repricing in matched UK SONIA and euro-area 
 | **Actual 1M forward points or rate differential** | Carry earned or paid by the FX expression. | Attribution/benchmark; outside primary composite. |
 | **Past EUR/GBP return** | Price trend. | Benchmark or robustness only. |
 | **Gilt-German yield spreads** | Broader market description or alternative signal check. | Diagnostic or secondary specification. |
+
+The 6M and 1Y horizons target the coming policy cycle while avoiding both very-near-meeting noise at the shortest tenors and greater longer-horizon contamination farther out. The 2Y differential is retained as the principal pre-specified horizon robustness test rather than included automatically in the headline composite.
 
 For tenor h, use rate levels in decimal annual-rate units; changes can be reported in basis points. At the eligible Thursday decision timestamp t, define:
 
@@ -230,13 +202,15 @@ S_t = (z_t(Delta_1w D_6M) + z_t(Delta_4w D_6M)
      + z_t(Delta_1w D_1Y) + z_t(Delta_4w D_1Y)) / 4
 ```
 
-The z-scores and S_t are dimensionless. Standardisation parameters must use lagged history genuinely available before the decision; the exact rolling/expanding window, minimum history, component caps, holiday/missing-week handling and signal-to-position map remain OPEN. Positive S_t means relatively hawkish UK repricing. One scalar drives all approved Module A sleeves; asset-specific volatility/DV01 scaling changes size, not the underlying signal. Apply the same one-week/four-week repricing logic to the 2Y differential as the principal horizon robustness check, rather than selecting the best horizon from performance.
+The z-scores and S_t are dimensionless. Standardisation parameters must use lagged history genuinely available before the decision; the exact rolling/expanding window, minimum history, component caps, holiday/missing-week handling and signal-to-position map remain OPEN. Positive S_t means relatively hawkish UK repricing. One scalar drives all approved expressions; asset-specific volatility/DV01 scaling changes size, not the underlying signal. Apply the same one-week/four-week repricing logic to the 2Y differential as the principal horizon robustness check, rather than selecting the best horizon from performance.
 
-Store all six raw daily OIS series, matched differentials, changes and component scores. Bank Rate, the ECB deposit facility rate, FX, government yields, carry and trend are context, diagnostics or benchmarks; they do not enter this primary composite. The earlier level/change/carry illustration is superseded by this working specification, which remains CANDIDATE under D015 until its remaining gates are resolved.
+Store all six raw daily OIS series, matched differentials, changes and component scores. Bank Rate, the ECB deposit facility rate, FX, government yields, carry and trend are context, diagnostics or benchmarks; they do not enter this primary composite. This working specification remains CANDIDATE under D015 until its remaining gates are resolved.
 
 Bootstrapped OIS forward nodes are conceptually closer to pricing at a particular future date, but matched par tenors are the primary working object for observability and reproducibility. Use forward nodes only as optional validation. Euro-area history crosses EONIA/€STR: require a documented continuous vendor history or explicitly reconciled splice, prevent lookbacks from straddling an artificial break, and shorten the comparable sample if necessary. The audited BoE 2Y spot-curve input is a separate diagnostic; it does not prove availability of these six par-rate histories.
 
-Illustrative weekly signal: four weeks ago the UK-minus-EA 12-month implied-rate differential was 0.90%. This week it is 1.25%. The +35bp change means the UK path has repriced more hawkishly relative to the euro area. Module A produces a positive signal, which maps into long GBP / short EUR and short UK duration / long German duration.
+Illustrative weekly signal: four weeks ago the UK-minus-EA 12-month implied-rate differential was 0.90%. This week it is 1.25%. The +35bp change means the UK path has repriced more hawkishly relative to the euro area. The strategy produces a positive signal, which maps into long GBP / short EUR and short UK duration / long German duration.
+
+Illustrative composite: suppose over the latest week the UK-minus-EA 6M differential widens by 12 bp and the 1Y differential widens by 9 bp, while their four-week changes are also positive. After lagged standardisation, the equal-weight composite S_t is positive: the UK short-end policy path has repriced relatively hawkishly. That single weekly signal maps into long GBP / short EUR, short UK / long German 2Y and 10Y duration, the pre-specified relative UK-flattener curve trade, and the same signed exposures inside the approved basket.
 
 ### 3.4.2 Signal data versus traded assets
 
@@ -249,9 +223,10 @@ The OIS curves define the view. The data-gated trade expressions generate strate
 | **UK-Germany 2Y rates spread** | Trade - earns relative short-rate P&L. | Positive signal maps to short UK 2Y duration / long German 2Y duration. |
 | **UK-Germany 10Y rates spread** | Trade - tests long-end transmission. | Same direction, but expected to contain more unrelated noise. |
 | **Relative curve trade** | Trade - tests curve-shape transmission. | Working positive-signal hypothesis: UK flattener versus German steepener; approval remains open. |
+| **Equal-risk rates-FX basket** | Portfolio expression. | The same S_t drives every included sleeve; intended core is the forward plus 2Y spread. |
 | **EUR/GBP spot** | Diagnostic. | Shows whether sterling strengthened, but is not the main funded return. |
 
-There is legitimate overlap in rates. If OIS pricing defines the signal and a two-year rates instrument generates P&L, Module A partly tests whether relative policy repricing persists or continues. To avoid a mechanical same-series backtest, use OIS-based data for signal formation and a separate validated return series for the traded exposure where possible: observed futures first, synthetic constant-maturity zero-coupon returns as fallback/robustness, and DV01 approximation as diagnostic only. A raw yield change is not itself an investable return.
+There is legitimate overlap in rates. If OIS pricing defines the signal and a two-year rates instrument generates P&L, the strategy partly tests whether relative policy repricing persists or continues. To avoid a mechanical same-series backtest, use OIS-based data for signal formation and a separate validated return series for the traded exposure where possible: observed futures first, synthetic constant-maturity zero-coupon returns as fallback/robustness, and DV01 approximation as diagnostic only. A raw yield change is not itself an investable return.
 
 ### 3.4.3 Weekly rebalancing
 
@@ -267,23 +242,23 @@ The signal may be calculated from daily data, but the target portfolio changes o
 
 5. Hold the resulting positions until the next rebalance and record P&L daily.
 
-6. Scheduled BoE and ECB meetings do not trigger an automatic flattening or a special pre-event trade. Module A carries its latest weekly target through the event; any announcement-driven repricing enters the next scheduled signal calculation.
+6. Scheduled BoE and ECB meetings do not trigger an automatic flattening or a special pre-event trade. The strategy carries its latest weekly target through the meeting; any announcement-driven repricing enters the next scheduled signal calculation.
 
 7. Use Friday-close signal to Monday-close execution and a midweek schedule as timing robustness checks, not as alternatives selected by whichever produces the best Sharpe ratio.
 
-Example rebalance: existing position is modest short GBP. Thursday's repricing signal changes from -0.30 to +0.70. At Friday close the FX sleeve reverses to long GBP under its weekly forward-reset rule, while the 2Y sleeve moves to its DV01-balanced target. Even with an unchanged subsequent signal, futures quantities can change because volatility, contract DV01, CTD, FX conversion or caps have changed. The primary FX forward still resets weekly even if its target notional is unchanged.
+Example rebalance: existing position is modest short GBP. Thursday's repricing signal changes from -0.30 to +0.70. At Friday close the FX sleeve reverses to long GBP under its weekly forward-reset rule, while the 2Y sleeve moves to its DV01-balanced target. If the following Thursday signal is still +0.70, futures quantities can still change because volatility, contract DV01, CTD, FX conversion or caps have changed. The primary FX forward still resets weekly even if its target notional is unchanged.
 
-### 3.4.4 Module A one-month EUR/GBP forward implementation
+### 3.4.4 one-month EUR/GBP forward implementation
 
-The selected primary Module A FX implementation is a weekly constant-maturity 1M forward reset. The one-month forward is the contractual tenor of the instrument, not the holding period of the strategy. Module A remains a weekly signal and weekly rebalance strategy: the signal determines desired direction and strength, risk scaling determines desired notional, and the forward-reset rule determines how that target exposure is represented in a fixed-maturity derivative.
+The selected primary FX implementation is a weekly constant-maturity 1M forward reset. The one-month forward is the contractual tenor of the instrument, not the holding period of the strategy. The strategy uses a weekly signal and weekly rebalance: the signal determines desired direction and strength, risk scaling determines desired notional, and the forward-reset rule determines how that target exposure is represented in a fixed-maturity derivative.
 
 For a positive relative-UK-hawkish signal, the FX position is long GBP / short EUR, economically short EUR/GBP. For a negative signal, the position is short GBP / long EUR, economically long EUR/GBP.
 
 **Primary specification: weekly constant-maturity 1M forward reset**
 
-At each weekly Module A rebalance:
+At each weekly rebalance:
 
-1. The latest Module A signal determines the desired FX direction and target notional after risk scaling.
+1. The latest weekly signal determines the desired FX direction and target notional after risk scaling.
 
 2. The forward entered at the previous weekly rebalance now has approximately three weeks of residual maturity.
 
@@ -295,7 +270,7 @@ At each weekly Module A rebalance:
 
 6. Record the P&L generated by the old position over the holding week.
 
-7. Enter a fresh 1M EUR/GBP forward at the current 1M forward rate with notional equal to the new Module A target.
+7. Enter a fresh 1M EUR/GBP forward at the current 1M forward rate with notional equal to the new target.
 
 8. Hold the new contract until the next weekly rebalance, then repeat the process.
 
@@ -323,7 +298,7 @@ The lower-turnover robustness implementation uses a monthly settlement cycle:
 
 2. Keep the same settlement date throughout that cycle.
 
-3. Recalculate the Module A target every week.
+3. Recalculate the target every week.
 
 4. Resize exposure by adding or subtracting forward notional with the same settlement date rather than fully closing the book and opening a new 1M contract every week.
 
@@ -337,7 +312,7 @@ This robustness test asks whether headline findings survive a lower-turnover for
 
 Do not define the primary strategy as simply layering a new fresh 1M forward on top of all existing outstanding forwards while leaving every old contract alive until its original maturity. That creates a staggered ladder of different residual maturities and makes the effective maturity exposure depend on the history of past signals. This is a valid alternative structure, but it is not the selected core specification.
 
-Do not restrict Module A FX rebalancing to monthly expiry dates. Module A is deliberately a weekly signal strategy, so its position must be capable of responding to weekly signal changes.
+Do not restrict FX rebalancing to monthly expiry dates. The strategy is deliberately a weekly signal strategy, so its position must be capable of responding to weekly signal changes.
 
 **Implementation fields required for the FX engine**
 
@@ -361,23 +336,9 @@ The eventual FX engine must distinguish at least:
 
 - new-contract transaction cost.
 
-These are implementation variants of the same economic signal, not separate alpha models. They do not change the Module A signal, weekly timing convention, sign convention, volatility targeting, leverage caps or broader transaction-cost methodology.
+These are implementation variants of the same economic signal, not separate alpha models. They do not change the signal, weekly timing convention, sign convention, volatility targeting, leverage caps or broader transaction-cost methodology.
 
-### 3.4.5 Module A benchmarks
-
-Module A needs a relatively broad benchmark ladder because its central claim is signal skill over repeated calendar observations. The benchmarks distinguish passive exposure, simple factor exposure and risk-management effects.
-
-| **Benchmark** | **Where used** | **What it tests** |
-|----|----|----|
-| **No position** | Every Module A strategy. | Did trading add value at all? |
-| **Constant direction** | FX and rates where economically relevant. | Is performance just persistent long GBP or persistent duration exposure? |
-| **Carry-only FX** | One-month forward. | Does the policy signal beat simply holding the higher-yielding currency? |
-| **Trend-only** | FX and potentially rates. | Is the macro signal merely following recent price movement? |
-| **Rate-differential level-only** | FX / relative rates. | Does recent repricing add more than the current level of the rate gap? |
-| **Unscaled versus volatility-targeted** | Every strategy. | How much comes from directional signal skill versus risk management? |
-| **Equal weight versus equal risk** | Module A basket. | Does risk balancing improve stability, or just dilute the best expression? |
-
-### 3.4.6 Primary and secondary Module A outputs
+### 3.4.5 Primary and secondary outputs
 
 - Headline 1: one-month EUR/GBP forward strategy driven by the common slow-divergence signal, using the primary weekly constant-maturity 1M forward reset, subject to observed-forward data approval or explicit proxy labelling.
 
@@ -387,28 +348,102 @@ Module A needs a relatively broad benchmark ladder because its central claim is 
 
 - Portfolio: equal-risk basket built only after standalone return series and costs are validated.
 
-- Diagnostics: EUR/GBP spot, raw signal components, individual rates legs, turnover and costs.
+- Diagnostics: EUR/GBP spot, raw OIS signal components, individual rates legs, 2s10s slopes, optional 5Y / 2s5s10s curvature measures, turnover and costs.
 
-### 3.4.7 Rates futures: construction, resizing and maintenance
+### 3.4.6 Rates futures: construction, resizing and maintenance
 
-The 2Y and 10Y labels describe underlying economic maturity buckets, not futures expiry or the weekly strategy holding period. The intended candidates are suitable UK short/long gilt and German Schatz/Bund-type futures, subject to contract, liquidity and history validation; no ticker or exact mapping is approved. Futures are preferred when prices, historical contract chains, contract DV01/CTD and roll data are defensible. Clean comparable cash-bond/total-return histories may validate the results. Synthetic constant-maturity zero-coupon returns are the fallback and exact-maturity robustness construction. Raw yield-change/DV01 approximations remain diagnostics.
+#### 3.4.6.1 What “2Y” and “10Y” mean in the rates spreads
 
-First balance each spread's legs by DV01 in GBP, then volatility-target the whole spread. Convert German per-contract EUR DV01 into GBP using the eligible EUR/GBP observation (GBP per EUR). At the documented sizing timestamp, use observable contract-risk metadata and FX conversion, lagged volatility and the latest eligible signal. Match absolute UK and German position DV01s as closely as feasible, document integer rounding and residual imbalance, and trade target quantities minus existing quantities. Preserve country-leg P&L.
+The 2Y and 10Y labels describe the target maturity bucket of the economic interest-rate exposure, not the expiry date of the futures contract used to implement it. The strategy holding period, the futures contract expiry and the maturity of the bond exposure underneath the future are three separate clocks.
 
-Every unit of the same listed contract has the same current expiry and risk regardless of purchase date. Weekly additions do not create separate maturity cohorts. Accept normal within-contract maturity drift, update CTD-dependent DV01 and record effective-maturity caveats; do not reset the entire futures book weekly to manufacture exact 2.000Y/10.000Y exposure. Synthetic construction supplies that separate constant-maturity comparison.
+| **Clock** | **What it means** | **Example** |
+|----|----|----|
+| Strategy holding/rebalance period | How long the current weekly target is normally held before reassessment. | Friday to Friday; daily P&L recorded. |
+| Futures contract expiry / delivery calendar | When the listed futures contract itself must be rolled or otherwise closed. | A September contract is replaced by a later contract around its market-specific roll period. |
+| Underlying maturity exposure | Which part of the yield curve the future economically represents. | Approximately 2Y for the short-end spread or approximately 10Y for the long-end spread. |
 
-**Provisional calendar roll.** The latest Modules specification proposes eligible windows 10-5 business days before UK First Notice Day and German Last Trading Day. Verify the applicable anchors, holiday calendars and deadlines against each selected exchange contract before implementation. Freeze the validated rule before performance comparison; the proposed windows are not established exchange conventions.
+The 2Y expression therefore remains “DV01-neutral UK versus Germany 2Y duration” even if the actual futures contract expires in a few months. Likewise, the 10Y expression targets the long-end maturity bucket; it does not require the futures contract itself to have ten years until expiry.
 
-1. Roll a leg at Friday's rebalance when it falls inside that leg's eligible window.
-2. Roll both countries together only when both windows contain that Friday; otherwise roll independently.
-3. Use the prescribed maintenance date if waiting for Friday would breach the safe deadline. This preserves exposure without refreshing the macro signal.
-4. When roll and resize coincide, trade directly to the new contract's final target rather than rolling the old target and resizing again. Recalculate quantities for the new DV01.
+#### 3.4.6.2 Rates implementation hierarchy: futures first, synthetics second
 
-Record signal-driven and contract-roll turnover/costs separately. The pre-specified liquidity-migration robustness rule rolls after next-contract daily volume exceeds current-contract volume for two consecutive completed trading days, with execution only after the trigger is observable and subject to the safe deadline. It may occur midweek. Do not choose roll timing by realised Sharpe. Required data include unadjusted individual-contract prices, contract chains, volume/open interest, risk/CTD metadata and delivery calendars; a continuous back-adjusted price alone does not establish executable roll P&L.
+Primary objective: use actual futures wherever the data and contract-risk history are sufficiently clean and reproducible. Futures are preferred because they are straightforward to short, capital-efficient, liquid, easy to resize weekly, have observable mark-to-market P&L and permit realistic transaction-cost and roll modelling. The exact contract mapping remains subject to the data gate; the intended candidates are the liquid UK and German government-bond futures that best represent the approximately 2Y and 10Y maturity buckets. Where clean and maturity-comparable cash-government-bond or government-bond total-return series are available, they may be used as an additional observed-market validation of the futures results; they are not a separate headline specification and do not displace futures as the preferred implementation.
 
-### 3.4.8 Relative curve: working hypothesis and approval gate
+| **Layer** | **2Y spread** | **10Y spread** | **Project status** |
+|----|----|----|----|
+| Economic expression | Short UK 2Y duration / long German 2Y duration for a positive hawkish-UK signal. | Short UK 10Y duration / long German 10Y duration for a positive hawkish-UK signal. | Fixed economic object; reverse for a negative signal. |
+| Preferred tradable implementation | Liquid UK short-maturity government-bond future versus German short-maturity/Schatz-type future, subject to data validation. | Liquid UK long-gilt future versus German Bund-type future, subject to data validation. | Priority if price, CTD/DV01 and roll data are defensible. |
+| Fallback / robustness | Synthetic constant-maturity UK and German 2Y zero-coupon bond returns. | Synthetic constant-maturity UK and German 10Y zero-coupon bond returns. | Modelled synthetic return; label explicitly. |
+| Diagnostic only | DV01 approximation from yield changes. | DV01 approximation from yield changes. | Not a direct traded return. |
 
-The latest Modules specification selects the starting hypothesis that relatively hawkish UK repricing causes more UK 2s10s flattening than German flattening. Define slope as 10Y yield minus 2Y yield. Positive S_t maps to short UK 2Y / long UK 10Y, against long German 2Y / short German 10Y; negative S_t reverses all four legs. Reuse validated 2Y/10Y instruments and their futures/synthetic hierarchy, risk metadata, roll and cost rules. This hypothesis is documented in D011, which remains OPEN for production approval.
+Synthetic constant-maturity returns remain valuable even when futures are primary because they provide a cleaner exact-maturity comparison. Futures may represent, for example, slightly different effective maturities across countries because of delivery baskets and CTD mechanics. The futures result answers the desk-realism question; the synthetic result asks whether the economic 2Y-versus-2Y or 10Y-versus-10Y conclusion survives when maturity matching is exact.
+
+#### 3.4.6.3 DV01-neutral construction and weekly futures resizing
+
+DV01 is the approximate currency-value change of a position for a one-basis-point move in the relevant yield. For a simple cash bond, DV01 is roughly Market Value × Modified Duration × 0.0001. For futures, use the current contract-specific DV01, ideally reflecting the relevant CTD/delivery mechanics, rather than applying the cash-bond approximation mechanically.
+
+Within each UK–Germany spread, first balance the two legs by DV01 in a common reporting currency (GBP); only then volatility-target the spread as a whole. The German contract DV01 must therefore be converted into the reporting currency before matching the legs, using the eligible EUR/GBP observation (GBP per EUR). At the documented sizing timestamp, use observable contract-risk metadata and FX conversion, lagged volatility and the latest eligible signal. Match absolute UK and German position DV01s as closely as feasible, document integer rounding and residual imbalance, and preserve country-leg P&L.
+
+Illustrative weekly sizing example: target spread exposure is £10,000 DV01. If the current UK futures DV01 is £25 per contract and the German futures DV01 is €35 per contract, equivalent to £30 after FX conversion, the target is approximately short 400 UK contracts and long 333 German contracts. One week later the signal strengthens and/or estimated volatility falls, raising the target to £13,000 DV01. If contract DV01s are otherwise unchanged, the new target becomes short 520 UK and long about 433 Germany, so the rebalance trades only the difference: sell 120 additional UK futures and buy about 100 additional German futures.
+
+Even with an unchanged macro signal, target contract counts can change because the lagged spread-volatility estimate moves, futures DV01s change, EUR/GBP changes the converted German DV01, the CTD changes, or a portfolio cap begins or ceases to bind. The implementation chain is therefore: signal + lagged risk estimate + current contract DV01s → new target contract quantities → trade only the difference from existing holdings.
+
+#### 3.4.6.4 Weekly rebalancing, maturity drift and CTD
+
+Weekly futures rebalancing does not create separate maturity cohorts when the same listed contract is used. If the portfolio already holds 100 September contracts and the target increases by 30, buying 30 more of that same September contract leaves 130 identical contracts. The original 100 do not retain a separate “1Y11M” exposure from the newly purchased 30; every unit of the same listed contract has the same current price, expiry and risk characteristics.
+
+Maturity drift still exists at the contract level. As time passes, the bonds in the deliverable basket age and the future’s effective maturity can move slightly shorter. An approximately 2Y exposure might drift from about 2.00Y to 1.98Y over a week; an approximately 10Y exposure might move to about 9.98Y. This is normally minor relative to the targeted maturity bucket: one week is roughly 1% of two years and 0.2% of ten years. The futures implementation therefore accepts small within-contract maturity drift rather than resetting the entire book every week merely to restore an exact maturity.
+
+CTD (cheapest-to-deliver) is a separate but related source of variation. Government-bond futures reference a basket of deliverable bonds, and the CTD generally has the greatest influence on the future’s effective maturity and DV01. The CTD can change as relative bond economics move, so a future should not be treated as exactly 2.000Y or 10.000Y at all times. Update contract DV01s appropriately and record CTD/maturity-bucket caveats in the instrument metadata.
+
+This is a major contrast with the FX-forward sleeve. A fresh 1M forward entered one week later genuinely has a different settlement date and residual tenor from the previous forward; additional units of the same listed futures contract do not.
+
+#### 3.4.6.5 Futures rolls: separate instrument maintenance from strategy rebalancing
+
+A futures roll is different from a weekly resize. Weekly rebalancing changes the desired risk exposure because the signal, volatility, DV01 or caps changed. A roll replaces an expiring/delivery-sensitive futures vehicle with the next approved contract while preserving the intended economic exposure. When rolling, recalculate quantities because the new contract may have a different DV01.
+
+Primary provisional roll convention: use market-specific eligible roll windows rather than one universal roll date. For UK gilt futures, use 10 to 5 business days before First Notice Day (FND). For German Bund/Schatz futures, use 10 to 5 business days before Last Trading Day (LTD). These anchors and exact contract calendars must be verified against the official exchange specifications before implementation and then frozen before performance comparison. Verify holiday calendars and safe deadlines for each selected contract; these provisional windows are not established exchange conventions.
+
+- Rule 1 — If a scheduled Friday rebalance falls inside a contract’s eligible roll window, roll that leg on the Friday and combine the roll with the new weekly target.
+
+- Rule 2 — If both UK and German roll windows contain the same Friday, roll both legs together.
+
+- Rule 3 — If only one market is inside its window, roll only that market. Do not force synchronized contract months if doing so would move the other leg prematurely into a less natural or less liquid contract.
+
+- Rule 4 — If waiting until the next Friday would breach the predetermined safe window, roll that leg on the prescribed maintenance date instead. This is an instrument-maintenance trade, not a new macro decision.
+
+If a roll and a weekly resize coincide, calculate the final target directly in the next contract rather than rolling the old target and then performing a second resize. Signal-driven turnover and contract-roll turnover should be stored and costed separately.
+
+##### Illustrative asynchronous roll quarter
+
+The dates below illustrate the sequence only; they are not a validated exchange calendar.
+
+| **Date** | **UK status** | **German status** | **Strategy action** |
+|----|----|----|----|
+| Fri 4 Sep | Too early to roll | Too early | Normal weekly resize only |
+| Fri 11 Sep | Inside UK roll window | Too early for Germany | Roll UK into next contract and apply current weekly target |
+| Fri 18 Sep | Already in next contract | Inside German roll window | Roll Germany and resize both legs to the current target |
+| Fri 25 Sep | Next contract | Next contract | Normal weekly resize |
+| Following Fridays | Next contract | Next contract | Normal weekly resize |
+
+The portfolio can therefore move from Sep UK / Sep Germany to Dec UK / Sep Germany and only later to Dec UK / Dec Germany. Matching futures contract months is not itself the objective. What must remain controlled is the intended UK–Germany maturity-bucket exposure and the DV01 balance of the two legs.
+
+#### 3.4.6.6 Roll-timing robustness specification
+
+Use one materially different roll-timing robustness test rather than a grid of nearby calendar windows. Under the liquidity-migration specification, roll when the next contract’s trading volume exceeds the current contract’s volume for two consecutive completed trading days, with execution only after the trigger is observable and subject to a pre-specified safety deadline before FND/LTD. Unlike the primary specification, this robustness roll can occur midweek rather than waiting for the Friday rebalance.
+
+The purpose is to test whether the rates results depend materially on the convenient weekly-aligned calendar convention rather than on the underlying economic exposure. The two specifications must be pre-specified and compared transparently; do not choose the roll rule that produces the highest Sharpe ratio. Volume/open-interest data can also be used diagnostically to check that the primary fixed window occurs during a plausible liquidity-transition period.
+
+Required data include unadjusted individual-contract prices, contract chains, volume/open interest, risk/CTD metadata and delivery calendars; a continuous back-adjusted price alone does not establish executable roll P&L. No ticker or exact contract mapping is approved.
+
+#### 3.4.6.7 Synthetic constant-maturity fallback and validation series
+
+If clean futures prices, historical contract chains, CTD/DV01 information, transaction-cost inputs or a sufficiently long common sample cannot be obtained reproducibly, use modelled constant-maturity synthetic zero-coupon returns as the rates implementation. The synthetic construction should maintain exact 2Y or 10Y maturity exposure through time, include the documented maturity roll/carry logic, and be labelled explicitly as synthetic rather than traded.
+
+Even when futures are approved as primary, retain the synthetic construction as an important robustness comparison. Similar conclusions across actual futures and exact constant-maturity synthetics would show that the result is not being driven mainly by contract selection, CTD changes, maturity drift or futures-roll mechanics. DV01 approximations from raw yield changes remain diagnostic/fallback checks only.
+
+### 3.4.7 Relative curve: working hypothesis and approval gate
+
+The starting hypothesis is that relatively hawkish UK repricing causes more UK 2s10s flattening than German flattening. Define slope as 10Y yield minus 2Y yield. Positive S_t maps to short UK 2Y / long UK 10Y, against long German 2Y / short German 10Y; negative S_t reverses all four legs. Reuse validated 2Y/10Y instruments and their futures/synthetic hierarchy, risk metadata, roll and cost rules. This hypothesis is documented in D011, which remains OPEN for production approval.
 
 Match 2Y and 10Y DV01 within each country, convert risk/P&L to GBP, put the two country curve portfolios on a comparable ex-ante risk basis, and target the combined strategy's volatility. Use feasible integer futures counts and retain all four leg contributions. Under within-country DV01 balance, the first-order positive-position price contribution is:
 
@@ -417,202 +452,35 @@ PnL_GBP ~= V_UK * (Delta_y_UK_2Y_bp - Delta_y_UK_10Y_bp)
          - V_DE * (Delta_y_DE_2Y_bp - Delta_y_DE_10Y_bp)
 ```
 
-Here V_UK and V_DE are positive matched country-curve DV01 amounts in GBP per bp, fixed from eligible sizing information before the holding period; yield changes are subsequent holding-period moves in bp. This is an approximate sign diagnostic before carry, roll, convexity and costs, not a traded return. With equal country DV01, UK moves +20/+7bp and German moves +8/+5bp produce +10bp times the common DV01. Different country risk weights require evaluating the weighted leg P&L rather than inferring profit solely from raw slope differences.
+Here V_UK and V_DE are positive matched country-curve DV01 amounts in GBP per bp, fixed from eligible sizing information before the holding period; yield changes are subsequent holding-period moves in bp. This is an approximate sign diagnostic before carry, roll, convexity and costs, not a traded return. With equal country DV01, UK moves +20/+7bp flatten the UK curve by 13bp and German moves +8/+5bp flatten the German curve by 3bp: the UK has flattened 10bp more, producing +10bp times the common DV01. The trade concerns relative curve shape, rather than UK yields rising alone; hawkish policy need not always flatten a curve. Different country risk weights require evaluating the weighted leg P&L rather than inferring profit solely from raw slope differences.
 
-Require flattening/reversal and parallel-shift sign scenarios, within-country balance and attribution reconciliation before approval. Do not switch steepener/flattener direction after performance inspection. If clean 5Y data are readily available, 2s5s10s curvature may explain unusual slope behaviour as a diagnostic only; it creates no extra traded sleeve or primary signal.
+Require flattening/reversal and parallel-shift sign scenarios, within-country balance and attribution reconciliation before approval. Do not switch steepener/flattener direction after performance inspection. If clean 5Y data are readily available, 2s5s10s curvature/butterfly measures may explain whether unusual slope behaviour is driven by the belly rather than a simple steepening or flattening, as a diagnostic only; it creates no extra traded sleeve or primary signal.
 
-### 3.4.9 Basket: intended core and limited extensions
+### 3.4.8 Basket: intended core and limited extensions
 
-The intended Module A core basket is the 1M forward plus DV01-balanced 2Y spread, both driven by S_t. Scale sleeves using lagged information to a comparable ex-ante risk basis, combine targets, net shared underlying positions before trading, and apply portfolio volatility/caps. Equal weight is a benchmark. This does not assume that covariance-aware equal risk contribution or Sharpe-optimised weights are implemented.
+The intended core basket is the 1M forward plus DV01-balanced 2Y spread, both driven by S_t. Scale sleeves using lagged information to a comparable ex-ante risk basis, combine targets, net shared underlying positions before trading, and apply portfolio volatility/caps. Allocate comparable risk rather than equal cash notionals or performance-fitted weights. Equal weight is a benchmark. This does not assume that covariance-aware equal risk contribution or Sharpe-optimised weights are implemented.
 
-The latest Word document calls this a primary basket freeze, but formal membership approval remains OPEN in D012 and `approved_components` remains empty until the instruments pass their gates. Keep the intended design distinct from approval to trade or headline a basket.
+Formal membership approval remains OPEN in D012 and `approved_components` remains empty until the instruments pass their gates. Keep the intended design distinct from approval to trade or headline a basket.
 
 | Basket | Research role |
 |---|---|
 | FX forward + 2Y | Intended primary core, subject to approval. |
-| FX forward + 2Y + 10Y | Separate pre-specified incremental extension question. |
-| FX forward + 2Y + curve | Separate pre-specified incremental extension question. |
+| FX forward + 2Y + 10Y | Does adding 10Y improve diversification and stability of the intended core? |
+| FX forward + 2Y + curve | Does adding the relative curve improve diversification and stability of the intended core? |
 | All four expressions | Diagnostic/robustness; not promoted because of in-sample performance. |
 
-Assess each optional sleeve on development/walk-forward evidence: incremental diversification/correlation, marginal risk, drawdown, regime stability and net performance after extra costs. Standalone Sharpe is insufficient. Record the inclusion rule and any approved extension before opening the holdout; do not search unrestricted subsets or weights.
+Assess each optional sleeve on development/walk-forward evidence: incremental diversification/correlation, marginal risk, drawdown, regime stability and net performance after extra costs. An optional sleeve need not have the best standalone Sharpe to add portfolio value; standalone Sharpe is insufficient. Record the inclusion rule and any approved extension before opening the holdout; do not search unrestricted subsets or weights.
 
-## 3.5 Module B - monetary-policy event surprises
-
-Module B asks a different question: when genuinely unexpected policy information arrives at a BoE or ECB announcement, which expression reacts most directly, and is there any implementable continuation or reversal after the surprise becomes observable? It is event-driven, not weekly.
-
-### 3.5.1 What defines the signal
-
-The signal is supplied by identified event-surprise factors from UKMPD and EA-MPD. The factor families should remain separate because they represent different dimensions of policy news.
-
-| **Factor** | **Economic meaning** | **Most natural first expressions** |
-|----|----|----|
-| **Target / current-rate** | Unexpected news about the immediate policy setting. | 2Y relative rates; FX diagnostic. |
-| **Path / forward guidance** | Unexpected news about the future policy path. | 2Y rates and FX forward; possibly intermediate curve exposure. |
-| **QE / longer horizon** | Unexpected balance-sheet or long-end policy news. | 10Y spread and relative curve; FX as secondary. |
-
-Normalise signs so that every positive value means relatively hawkish UK. A hawkish BoE surprise is positive; a hawkish ECB surprise is negative in UK-minus-EA terms. UK and ECB factors should not be pooled mechanically unless their definitions, scales, windows and standardisation have been mapped carefully.
-
-### 3.5.2 Two distinct event analyses
-
-Do not blur these together. The contemporaneous event study identifies market transmission but is not automatically tradable. The post-event strategy begins only after the surprise can be observed and a defensible execution price is available.
-
-**A. Contemporaneous event response**
-
-Measure what happened during the announcement window, over the event day and possibly by the next close. Typical outputs are shock betas, response profiles and cross-expression comparisons. This analysis can say that 2Y rates carried a Target shock more directly than FX, but it cannot claim that a trader entered before the surprise was known.
-
-**B. Implementable post-event strategy**
-
-After the surprise has occurred, define the first permissible entry price and test whether the move continues or reverses. The strategy is triggered by the event rather than by a weekday calendar.
-
-1. Observe and classify the BoE or ECB surprise after the designated announcement window closes.
-
-2. Enter at the first defensible post-event price supported consistently by the data, such as the post-window quote, event-day close or next close.
-
-3. Scale the position by surprise sign, and optionally by capped surprise magnitude, using only ex-ante risk estimates.
-
-4. Hold for pre-specified horizons such as 1, 5 and 20 business days, or close according to a clearly defined event-overlap rule.
-
-5. Test continuation and reversal separately; do not choose the winning direction after examining the full sample.
-
-Concrete event example: a BoE Path factor is +1.0 standard deviations, indicating unexpectedly hawkish UK guidance. The contemporaneous study measures EUR/GBP, 2Y, 10Y and curve reactions during the announcement. The implementable test then enters long GBP / short EUR and short UK 2Y / long German 2Y only after the event window, and measures the next 1-, 5- and 20-day returns.
-
-### 3.5.3 Which assets Module B examines
-
-Module B uses the same broad expression universe as Module A, but the emphasis changes by shock type. The assets were not designed mainly for Module B; they are common trade expressions tested under two different information structures.
-
-| **Expression** | **Module B role** | **Priority** |
-|----|----|----|
-| **EUR/GBP spot** | Clean diagnostic of immediate currency response. | Core diagnostic. |
-| **One-month FX forward** | Funded FX expression for post-event holding; immediate response may be proxied carefully where forward quotes are unavailable. | Core strategy / diagnostic, data-gated. |
-| **UK-Germany 2Y spread** | Leading candidate for Target and Path shocks. | Core headline. |
-| **UK-Germany 10Y spread** | Candidate for QE and long-horizon surprises; contamination must be discussed. | Secondary headline. |
-| **Relative curve** | Shows whether short and long maturities respond differently to shock type. | Conditional but informative. |
-| **Equal-risk basket** | Secondary summary only; avoid hiding factor-specific transmission too early. | Build after standalone event results. |
-
-### 3.5.4 Event-trade dynamics that require explicit rules
-
-Module B inherits the approved Module A rates instrument layer: active contracts, DV01/CTD treatment and roll rules. A roll during a post-event holding period maintains the existing economic target, incurs roll costs and is not a new event signal. Separate raw announcement-window yield/price responses from implementable traded P&L.
-
-| **Issue** | **Required decision** |
-|----|----|
-| **Entry timing** | Exact event window and first executable price; no use of pre-surprise prices for a surprise-driven trade. |
-| **Holding horizon** | Pre-specify 1, 5 and 20 business days or another small set; do not optimise dozens of exits. |
-| **Overlapping events** | Define whether a new BoE/ECB event closes, nets or replaces an existing position. |
-| **BoE versus ECB signs** | Map both to positive = hawkish UK. |
-| **Magnitude scaling** | Compare sign-only with capped magnitude-scaled shocks; avoid extreme positions from outliers. |
-| **Different factors** | Target, Path and QE remain separate unless a documented combination is justified. |
-| **Information effects** | Allow for counterintuitive FX or equity responses when policy news also reveals growth or inflation information. |
-| **Event scarcity** | Report event counts, influential observations and concentration; event results can be dominated by a few episodes. |
-
-### 3.5.5 Interaction between Modules A and B around policy meetings
-
-BoE and ECB meetings are the natural point at which the modules overlap. The overlap should be handled through a clear chronology rather than by treating the modules as competing forecasts. Module A is the continuously held baseline strategy; Module B begins with the observed surprise and is reactive by design.
-
-**Selected core rule: maintain the Module A position**
-
-The core project uses the continuous-exposure approach. Module A keeps the position implied by its latest weekly signal through scheduled policy meetings. It does not automatically flatten before the event and it does not add a separate position merely because a meeting is approaching.
-
-This exposure must not be described as a forecast of the announcement surprise. If Module A is long GBP before a hawkish BoE surprise, the event-day gain comes from a pre-existing macro position, not from having observed or predicted the UKMPD factor in advance.
-
-Once the announcement changes SONIA, euro overnight rates or other OIS pricing, that repricing naturally becomes part of the next Module A signal. Module A therefore absorbs policy events through observable changes in the market-implied path while preserving its weekly decision frequency.
-
-| **Stage** | **Treatment** |
-|----|----|
-| **Before the announcement** | Module A's latest weekly target remains active. Module B has no surprise-driven position because the surprise is not yet known. |
-| **Announcement window** | Module A earns or loses P&L from its pre-existing exposure. Module B measures the contemporaneous response, which is identification evidence rather than an executable pre-surprise trade. |
-| **First permissible post-event price** | Module B may enter a reactive continuation or reversal trade based on the observed surprise. Module A remains at its latest weekly target until its scheduled rebalance. |
-| **Next Module A rebalance** | Updated OIS pricing, including the event's effect, feeds into the new weekly signal. In a later combined implementation, any live Module B overlay must be netted with Module A and subject to the common risk cap. |
-
-**Research treatment and attribution**
-
-Evaluate the modules as separate sleeves first. Module A's full return series includes the consequences of carrying its baseline position through events. Module B's implementable P&L begins only at the documented post-event entry price. This prevents the same announcement move from being claimed twice.
-
-Module C should split Module A P&L into event and non-event periods and report whether a small number of meetings dominate the weekly strategy. Only after the standalone results are understood should a combined portfolio be considered, with Module A as the baseline and Module B as a temporary, netted and risk-capped overlay.
-
-**Alternatives and future extension**
-
-A simple event de-risking version, such as reducing Module A exposure before scheduled decisions and restoring it afterward, may be used as one pre-specified robustness test. It should not become a grid of reduction percentages and re-entry timings selected by backtest performance.
-
-Predicting the central-bank surprise before the meeting is a distinct and potentially valuable future extension, not part of the core A/B design. It would require a separate pre-event forecasting model using information such as meeting-dated OIS, surveys, macro releases, communication and possibly option-implied distributions. The event sample is small and the overfitting risk is high, so this extension should be attempted only after the core project is complete.
-
-Selected project policy: Module A remains continuously invested according to its latest weekly target through BoE and ECB meetings; Module B takes no surprise-based position before the event and may trade only after the surprise is observable. Pre-event surprise forecasting is reserved as a future extension.
-
-### 3.5.6 Module B benchmarks
-
-The benchmark set is partly shared with Module A, but it is not identical. Carry-only and trend-only rules are central competitors for a weekly FX strategy; they are less natural as headline benchmarks for a sparse event study.
-
-| **Benchmark or control** | **Use in Module B** |
-|----|----|
-| **Zero response / no post-event trade** | Basic null for contemporaneous betas and implementable strategy P&L. |
-| **Non-event or matched control days** | Shows whether event-day moves are unusual; a diagnostic rather than a tradable benchmark. |
-| **Constant-direction exposure around every event** | Tests whether returns come from a generic announcement-day premium rather than shock sign. |
-| **Sign-only versus magnitude-scaled surprise** | Separates robust directional information from noisy factor magnitude. |
-| **Immediate response versus post-event holding** | Separates identification from implementability and continuation/reversal. |
-| **Unscaled versus volatility-targeted** | Separates event-signal performance from risk management. |
-| **Carry and trend controls** | Optional explanatory controls for FX post-event returns, not mandatory headline benchmarks. |
-
-## 3.6 Module C - expression comparison and attribution
-
-Module C does not create a third macro signal. It combines the evidence from Modules A and B to answer the project's north-star question: which expression is cleanest under which type of policy movement, over which horizon, and why?
-
-### 3.6.1 What Module C compares
-
-| **Dimension** | **Questions** |
-|----|----|
-| **Signal sensitivity** | Which expressions load most consistently on the slow divergence signal and on each surprise factor? |
-| **Risk efficiency** | After common ex-ante volatility normalisation, which expression offers the best return per unit of intended risk? |
-| **Contamination** | Are results driven by global risk sentiment, fiscal shocks, term premium, broad currency moves or one crisis episode? |
-| **Implementability** | What survives realistic carry, roll, turnover, transaction costs and execution lags? |
-| **Robustness** | Does the ranking persist across samples, regimes, horizons, rebalance timing and event definitions? |
-| **Interpretability** | Can the return be reconciled to transparent market mechanics rather than a post-hoc story? |
-
-### 3.6.2 Required attribution
-
-| **Expression** | **Attribution to show** |
-|----|----|
-| **FX forward** | Spot movement; forward/carry component; transaction costs; scaling effect. |
-| **2Y / 10Y spread** | UK/German legs; common-currency DV01; active contracts and CTD/maturity metadata; signal turnover versus roll turnover/costs; carry/roll where available; futures-versus-synthetic differences. |
-| **Curve trade** | Each maturity and country leg; net curve component; duration balance. |
-| **Basket** | Contribution from each component; covariance/diversification effect; equal-weight versus equal-risk difference. |
-| **All strategies** | Event versus non-event P&L; regime contribution; gross versus net; unscaled versus scaled. |
-| **Combined A+B implementation** | Module A baseline; Module B overlay; netting of common instruments; risk-cap effect; overlapping holding periods; no double attribution. |
-
-### 3.6.3 How conclusions should be framed
-
-The expected final answer is conditional rather than "one asset always wins." A credible conclusion could be that 2Y rates transmit identified Target and Path shocks most directly; the one-month forward is more useful for slower multiweek divergence and includes carry; 10Y and curve expressions add information but are more regime-dependent; and an equal-risk basket sacrifices some peak performance for improved drawdown and stability. These are hypotheses to test, not conclusions to force.
-
-The basket belongs in Module C. The basket should be built only after standalone expressions are validated. Begin with the one-month forward and 2Y spread; add 10Y or curve exposure only if it contributes a distinct, defensible source of information or diversification and is approved in the decision register.
-
-Where available, compare futures with exact constant-maturity synthetic returns, and the provisional calendar roll with the pre-specified liquidity-migration roll. A ranking change is an implementation finding to explain, not a discrepancy to average away.
-
-## 3.7 Benchmark map by module
-
-Some benchmarks are universal, while others are tied to the economic structure of a specific module or expression. Using every benchmark everywhere would create clutter without improving identification.
-
-| **Benchmark** | **Module A** | **Module B** | **Module C** |
-|----|----|----|----|
-| **No position** | Yes - core. | Yes - core for post-event trading. | Used as reference. |
-| **Constant direction** | Yes - core where relevant. | Yes - around all events. | Compared and attributed. |
-| **Carry-only FX** | Yes - core FX benchmark. | Optional control. | Explains FX differences. |
-| **Trend-only** | Yes - core/robustness. | Optional control. | Assesses whether policy signal adds beyond trend. |
-| **Rate-level-only** | Yes - core simple competitor. | Usually not central. | Explains level versus surprise/repricing skill. |
-| **Non-event control days** | Not central. | Core diagnostic. | Event/non-event attribution. |
-| **Sign-only versus magnitude-scaled** | Optional for continuous signal. | Core event implementation check. | Compares robustness. |
-| **Unscaled versus volatility-targeted** | Core. | Core. | Attributes scaling effect. |
-| **Equal weight versus equal risk** | Basket only. | Secondary basket check. | Core portfolio comparison. |
-
-## 3.8 Implementation blueprint
+## 3.5 Implementation blueprint
 
 | **Stage** | **Recommended implementation** |
 |----|----|
-| **Module A signal** | Four equal-weight lagged-standardised 1w/4w changes in matched 6M/1Y par OIS differentials; 2Y horizon robustness; level-only benchmark separate. |
-| **Module A trades** | One-month EUR/GBP forward using weekly constant-maturity reset, and DV01-balanced UK-Germany 2Y spread as co-headline strategies, subject to data gates. |
-| **Module A extensions** | 10Y spread and one curve trade only after data and economic-direction gates; equal-risk basket after standalone validation. |
-| **Module B signals** | Separate UKMPD and EA-MPD Target, Path and QE/long-horizon factors with a common sign convention. |
-| **Module B analyses** | Contemporaneous response plus implementable post-event continuation/reversal at pre-specified horizons. |
-| **Module C** | Common-risk comparison, attribution, costs, regimes, robustness and conditional ranking. |
+| **Weekly signal** | Four equal-weight lagged-standardised 1w/4w changes in matched 6M/1Y par OIS differentials; 2Y horizon robustness; level-only benchmark separate. |
+| **Core trades** | One-month EUR/GBP forward using weekly constant-maturity reset, and DV01-balanced UK-Germany 2Y spread as co-headline strategies, subject to data gates. |
+| **Data-gated expressions** | 10Y spread and one curve trade only after data and economic-direction gates; equal-risk basket after standalone validation. |
+| **Evaluation** | Common-risk comparison, attribution, costs, regimes, robustness and conditional ranking. |
 
-### 3.8.1 What not to do
+### 3.5.1 What not to do
 
 - Do not treat Bank Rate, SONIA, a 2Y gilt yield, a 2Y OIS rate and a two-year expected policy rate as interchangeable objects.
 
@@ -622,42 +490,29 @@ Some benchmarks are universal, while others are tied to the economic structure o
 
 - Do not call a daily yield change a tradable bond return without an actual, synthetic or DV01-based return construction and explicit label.
 
-- Do not interpret contemporaneous surprise responses as profits available to a trader before the announcement.
-
 - Do not combine every validated expression into the basket automatically; diversification must be demonstrated, not assumed.
 
-- Do not describe Module A profits or losses on policy-event days as evidence that the model forecast the announcement surprise; they arise from the pre-existing weekly position.
+- Attribute policy-meeting P&L to the pre-existing weekly position; evaluate meeting concentration using the diagnostics in Section 15.1.
 
-- Do not combine Module A and Module B without netting overlapping exposures, applying a common risk cap and separating contemporaneous event response from post-event implementable P&L.
+## 3.6 Decisions requiring register confirmation
 
-## 3.9 Decisions requiring register confirmation
-
-The revised module specification clarifies the architecture but does not pretend that every implementation choice is already settled. The following should be decided and recorded before final backtesting or holdout inspection. If any row below conflicts with the decision register, [../project/DECISIONS.md](../project/DECISIONS.md) controls.
+The working specification leaves implementation choices subject to explicit gates. The following should be decided and recorded before final backtesting or holdout inspection. If any row below conflicts with the decision register, [../project/DECISIONS.md](../project/DECISIONS.md) controls.
 
 | **Decision area** | **Recommended starting position** | **Current control** |
 |----|----|----|
 | **OIS signal horizons** | Working primary matched 6M/1Y par OIS; collect 2Y for horizon robustness. | D015 remains CANDIDATE pending data and remaining signal rules. |
 | **Signal lookbacks and weights** | Four equal-weight standardised 1w/4w changes; differential level outside primary composite. | D015. |
 | **Standardisation** | Rolling or expanding z-scores using lagged information only, with caps and minimum-history rules. | D015 / D016. |
-| **Module A timing** | Working primary: Thursday-close signal to Friday-close execution; Friday-to-Monday and midweek as pre-specified robustness checks. | D020. |
-| **Module A FX forward maturity/rebalancing** | Primary weekly constant-maturity 1M forward reset; robustness monthly forward roll with weekly same-maturity notional resizing. | D028. |
+| **Weekly timing** | Working primary: Thursday-close signal to Friday-close execution; Friday-to-Monday and midweek as pre-specified robustness checks. | D020. |
+| **FX forward maturity/rebalancing** | Primary weekly constant-maturity 1M forward reset; robustness monthly forward roll with weekly same-maturity notional resizing. | D028. |
 | **Rates return construction** | Government-bond futures preferred; synthetic constant-maturity fallback/robustness; DV01 approximation diagnostic. Weekly target resizing and validated market-specific roll rules. | D010 remains OPEN; D022 labels remain FROZEN. |
 | **Volatility target and caps** | One common ex-ante target across expressions, lagged estimate, floors/caps and no Sharpe optimisation. | D016. |
 | **Costs** | Low, central and stressed scenarios; gross/net and cost break-even reported. | D017. |
-| **Module B event windows** | Use database definitions where available; map UK and ECB windows explicitly. | D027. |
-| **Post-event entry and exits** | First defensible post-event price; pre-specify 1, 5 and 20 business-day horizons or another small set. | D027. |
-| **Overlapping events** | Close, net or replace existing event positions according to one documented rule. | D027. |
-| **Curve direction** | Working relative UK flattener hypothesis and four legs in Section 3.4.8; no production approval inferred. | D011 remains OPEN. |
+| **Curve direction** | Working relative UK flattener hypothesis and four legs in Section 3.4.7; no production approval inferred. | D011 remains OPEN. |
 | **Basket membership** | Intended forward-plus-2Y core; separate 10Y/curve extension gates and full-basket diagnostic. | D012 remains OPEN; D013 provisional risk weighting. |
 | **Bloomberg data route** | Project Terminal access guaranteed; verify exact fields, histories and repeatable terminal exports/code ingestion. Local API not assumed. | D029 PROVISIONAL sourcing plan. |
 | **Holdout and freeze** | Lock final sample and methodology before inspecting holdout performance. | D014 / D019. |
-| **Module A policy-meeting exposure** | Carry the latest weekly target through scheduled BoE and ECB meetings; no automatic flattening and no separate pre-event bet. Report event versus non-event P&L. | D025. |
-| **Module A / B interaction** | Evaluate separately first. In any combined portfolio, treat A as the baseline and B as a temporary netted, risk-capped overlay; prevent double attribution. | D025. |
-| **Pre-event surprise forecasting** | Outside the core scope. Retain as a future extension using genuinely pre-event information only, after the main project is complete. | D026. |
-
-## 3.10 Final mental model
-
-OIS-path data and identified announcement shocks generate the relative-policy view. The forward, 2Y spread, 10Y spread and curve are alternative ways to express it. The basket combines validated expressions. Module C determines which channel works, when and why.
+| **Policy-meeting exposure** | Carry the latest weekly target through scheduled BoE and ECB meetings; no automatic flattening and no separate pre-event bet. Report event versus non-event P&L. | D025. |
 
 # 4. Hypotheses and falsification standards
 
@@ -665,29 +520,25 @@ Pre-register a small set of hypotheses before examining the final results. A goo
 
 | **ID** | **Hypothesis** | **Mechanism** | **Evidence against** |
 |----|----|----|----|
-| **H1** | Two-year relative rates provide the cleanest immediate expression of policy surprises. | Short maturities are closely linked to the expected policy path. | Weak or unstable surprise beta; performance dominated by one episode; stronger contamination than FX. |
-| **H2** | FX forwards are more useful for slower multiweek divergence than for the immediate event window. | FX can absorb relative growth, risk and carry effects over time. | No incremental relation to the signal; returns mostly explained by unrelated risk-on/risk-off moves. |
+| **H1** | Two-year relative rates provide the cleanest exposure to weekly relative policy repricing. | Short maturities are closely linked to the expected policy path. | Weak or unstable signal sensitivity; performance dominated by one episode; stronger contamination than FX. |
+| **H2** | FX forwards provide useful exposure to multiweek policy divergence, including carry. | FX can absorb relative growth, risk and carry effects over time. | No incremental relation to the signal; returns mostly explained by unrelated risk-on/risk-off moves. |
 | **H3** | Ten-year spreads are more regime-dependent than two-year spreads. | Long yields embed term premium, supply, inflation and fiscal risk. | Stable signal loading and robustness equal to or better than the short-end trade. |
 | **H4** | An equal-risk rates-FX basket is more stable than any single expression. | Diversification across distinct transmission channels. | Basket merely dilutes the strongest leg without improving drawdown or regime stability. |
 | **H5** | Costs and turnover change the relative ranking of expressions. | FX, rates and curves have different implementation frictions and rebalancing needs. | Rankings are unchanged even under stressed cost scenarios. |
 
 ## 4.1 Benchmark ladder
 
-The primary model must be compared against simple benchmarks so the project does not confuse a persistent asset premium with signal skill.
+Use the same timing, approved return construction, risk and cost assumptions for the strategy and its relevant benchmarks. These distinguish weekly repricing information from passive exposure, simple factors and risk-management effects.
 
-- No-position benchmark.
-
-- Always-long or constant-direction exposure where economically relevant.
-
-- Carry-only FX benchmark.
-
-- Trend-only benchmark.
-
-- Rate-differential level-only benchmark.
-
-- Unscaled signal benchmark versus volatility-targeted implementation.
-
-- Equal-weight basket versus equal-risk basket.
+| **Benchmark** | **Where used** | **What it tests** |
+|----|----|----|
+| **No position** | Every strategy. | Did trading add value at all? |
+| **Constant direction** | FX and rates where economically relevant. | Is performance just persistent long GBP or persistent duration exposure? |
+| **Carry-only FX** | One-month forward. | Does the policy signal beat simply holding the higher-yielding currency? |
+| **Trend-only** | FX and potentially rates. | Is the macro signal merely following recent price movement? |
+| **Rate-differential level-only** | FX / relative rates. | Does recent repricing add more than the current level of the rate gap? |
+| **Unscaled versus volatility-targeted** | Every strategy. | How much comes from directional signal skill versus risk management? |
+| **Equal weight versus equal risk** | Basket. | Does risk balancing improve stability, or just dilute the best expression? |
 
 > **PART II \| PREPARATION, FUNDAMENTALS AND DECISIONS**
 
@@ -726,12 +577,12 @@ The table below summarises decision gates; [the decision register](../project/DE
 
 | **Decision** | **Required gate** | **Recommended default** | **Freeze rule** |
 |----|----|----|----|
-| **FX market quote** | Kickoff | Use EUR/GBP as displayed market price; define positive strategy exposure as long GBP / short EUR. | Never mix quote conventions inside modules. |
+| **FX market quote** | Kickoff | Use EUR/GBP as displayed market price; define positive strategy exposure as long GBP / short EUR. | Never mix quote conventions across calculations. |
 | **Signal sign** | Kickoff | Positive = UK becoming more hawkish relative to euro area. | All transformations and charts inherit this sign. |
 | **P&L numeraire** | Kickoff | Choose one reporting numeraire and state it on every return series. | Change only if technical implementation requires it. |
-| **Slow-module frequency** | Kickoff | Weekly signal and rebalance; daily data for construction and risk estimates. | Daily strategy is out of scope unless core is complete. |
+| **Strategy frequency** | Kickoff | Weekly signal and rebalance; daily data for construction and risk estimates. | Daily strategy is out of scope unless core is complete. |
 | **Candidate trade set** | Data and instrument approval | Spot diagnostic; 1M forward; 2Y spread; 10Y spread; one curve trade; equal-risk basket. | Drop anything that fails data or instrument validation. |
-| **Data source hierarchy** | Data approval | Bloomberg terminal exports for market data; official event sources and public validation/fallbacks (D029). | Verify histories, fields, permissions and reproducibility; do not silently mix vendors. |
+| **Data source hierarchy** | Data approval | Bloomberg terminal exports for market data; official policy calendars and public validation/fallbacks (D029). | Verify histories, fields, permissions and reproducibility; do not silently mix vendors. |
 | **Common sample** | Data approval, before performance exploration | Earliest reliable intersection of core series, not earliest date in any one source. | Record exclusions and structural breaks. |
 | **Holdout** | Sample approval, before full performance exploration | Lock final 15-20% or approximately final 18-24 months, depending on sample length. | Inspect only after methodology freeze; record dates and rationale. |
 | **Rates return method** | Instrument approval | Actual futures/total returns if clean; otherwise curve-implied synthetic zero-coupon returns; DV01 approximation only as diagnostic. | Label actual, synthetic and proxy returns explicitly. |
@@ -739,7 +590,7 @@ The table below summarises decision gates; [the decision register](../project/DE
 | **Volatility target and caps** | Before performance comparison | Single ex-ante target across expressions with lagged estimates and sensible floors/caps. | Do not optimise target for Sharpe. |
 | **Cost scenarios** | Before net performance comparison | Low, central and stressed; report cost break-even. | Apply consistently and show gross versus net. |
 | **Regime definitions** | Before regime analysis and methodology freeze | Pre-specified time or observable-state rules. | Do not invent regimes around attractive charts. |
-| **Methodology freeze** | Validated core and development evidence, before final holdout inspection | Freeze signal, approved expressions, risk, costs, timing, event rules, sample and robustness plan. | Record the configuration and date; afterwards allow bug fixes and pre-agreed tests only. |
+| **Methodology freeze** | Validated core and development evidence, before final holdout inspection | Freeze signal, approved expressions, risk, costs, timing, policy-meeting exposure, sample and robustness plan. | Record the configuration and date; afterwards allow bug fixes and pre-agreed tests only. |
 | **Stretch activation** | After freeze and core validation; spare capacity confirmed | Only if every core gate is green and core delivery is protected. | Pre-authorise before freeze; one secondary stretch item maximum. |
 
 # 7. Fundamentals curriculum
@@ -770,17 +621,15 @@ Preparation should run in parallel with data work. The objective is not to compl
 
 \[ \] Futures or synthetic zero-coupon implementations and their limitations.
 
-## 7.3 Monetary-policy identification
+## 7.3 Policy-path pricing and repricing
 
-\[ \] Expected policy decisions versus surprises.
+\[ \] Matched par OIS tenors and how they reflect the expected policy path, premia and technical effects.
 
-\[ \] Target/current-rate factors versus path/forward-guidance factors.
+\[ \] Relative policy-path levels versus one-week/four-week repricing.
 
-\[ \] Announcement and press-conference windows.
+\[ \] SONIA and euro overnight benchmark definitions, continuity and availability timestamps.
 
-\[ \] Information effects and counterintuitive asset responses.
-
-\[ \] Comparability limits between UKMPD and EA-MPD factor definitions.
+\[ \] Why FX, short rates, long rates and curves can respond differently to the same relative-policy view.
 
 ## 7.4 Backtesting and inference
 
@@ -800,9 +649,6 @@ Use a literature matrix rather than a broad narrative review. Each paper should 
 
 | **Priority** | **Paper / source** | **Why it matters** | **Required output** |
 |----|----|----|----|
-| **Core** | Gurkaynak, Sack and Swanson - Do Actions Speak Louder Than Words? | Establishes the target-versus-path logic in high-frequency monetary-policy identification. | Write the factor interpretation and event-timing rules you will adopt. |
-| **Core** | Braun, Miranda-Agrippino and Saha - UKMPD | UK event-study data, windows and factor construction. | Map every UKMPD factor and sign to your event module. |
-| **Core** | Altavilla et al. - Measuring Euro Area Monetary Policy | EA-MPD, decision and press-conference windows, multiple policy dimensions. | Document factor comparability with UKMPD. |
 | **Core** | Fama - Forward and Spot Exchange Rates | Foundational framework for forward premiums and currency risk premia. | Define the FX excess-return measure and avoid treating forward as a pure forecast. |
 | **Core** | Menkhoff et al. - Currency Momentum Strategies | Transparent evidence and implementation issues for FX trend. | Decide whether trend is a benchmark or conditioner. |
 | **Core** | Lustig, Roussanov and Verdelhan - Common Risk Factors in Currency Markets | Frames carry as exposure to systematic currency risk rather than free alpha. | Define global-risk contamination tests. |
@@ -812,13 +658,13 @@ Use a literature matrix rather than a broad narrative review. Each paper should 
 
 # 9. Data feasibility and audit standard
 
-The data audit is a research deliverable, not an administrative task. The data-approval gate determines whether each proposed expression is real, synthetic, proxy-based or infeasible. No module may proceed with an unexplained series.
+The data audit is a research deliverable, not an administrative task. The data-approval gate determines whether each proposed expression is real, synthetic, proxy-based or infeasible. No calculation may proceed with an unexplained series.
 
 ## 9.1 Source hierarchy
 
-- **Tier 1 - official and reproducible:** Bank of England, ECB Data Portal, Bundesbank, UKMPD and EA-MPD.
+- **Tier 1 - official and reproducible:** Bank of England, ECB Data Portal and Bundesbank.
 
-- **Tier 2 - institutionally licensed:** Bloomberg Terminal access is guaranteed for this project. Use Bloomberg as the working primary market-data route for forwards, matched OIS and futures; retain official sources for event identification and public validation. Document repeatable queries/exports and code ingestion so the collaborators can reproduce permitted use of the snapshots. A local Bloomberg API installation is not required or assumed.
+- **Tier 2 - institutionally licensed:** Bloomberg Terminal access is guaranteed for this project. Use Bloomberg as the working primary market-data route for forwards, matched OIS and futures; retain official policy calendars and public validation sources. Document repeatable queries/exports and code ingestion so the collaborators can reproduce permitted use of the snapshots. A local Bloomberg API installation is not required or assumed.
 
 - **Tier 3 - public market-data services:** Acceptable for supplementary diagnostics after a spot-check against an official or institutional source.
 
@@ -849,8 +695,6 @@ The data audit is a research deliverable, not an administrative task. The data-a
 | **UK/German government-bond futures** | Bloomberg individual-contract prices and metadata; exchange specifications for calendar validation | 2Y/10Y spreads and reused curve legs | Contract mapping, liquidity, prices, historical DV01/CTD, volume/open interest, expiry and delivery calendars? |
 | **UK/German curve inputs** | BoE nominal zero curves and Bundesbank term-structure yields | Synthetic fallback/robustness and diagnostics | Compounding, interpolation, maturity roll and economic comparability? |
 | **Policy rates and dates** | BoE and ECB | Context and event calendar | Decision timestamp and special meetings? |
-| **UK event surprises** | UKMPD | BoE event module | Factor definitions, windows, updates and signs? |
-| **ECB event surprises** | EA-MPD | ECB event module | Decision vs press-conference windows and factor mapping? |
 | **Volatility / risk proxy** | Pre-agreed reproducible source | Regime analysis | Was the value observable at the strategy timestamp? |
 
 ## 9.4 Data-approval gate
@@ -871,11 +715,11 @@ The data audit is a research deliverable, not an administrative task. The data-a
 
 > **PART III \| TECHNICAL AND EMPIRICAL DESIGN**
 
-*How the data, instruments, signals, risk engine, event study and analysis should work.*
+*How the data, instruments, weekly signal, risk engine and evaluation should work.*
 
 # 10. System architecture
 
-Build a modular research system with a single direction of data flow. Notebooks may explore, but production calculations should live in tested source modules.
+Build a modular research system with a single direction of data flow. Notebooks may explore, but production calculations should live in tested source code.
 
 <table>
 <colgroup>
@@ -887,7 +731,7 @@ Build a modular research system with a single direction of data flow. Notebooks 
 -&gt; ingestion and immutable raw snapshots<br />
 -&gt; cleaning, metadata and calendar alignment<br />
 -&gt; instrument prices / synthetic prices / returns<br />
--&gt; signals and event surprises<br />
+-&gt; weekly OIS policy-repricing signal<br />
 -&gt; positions and risk sizing<br />
 -&gt; costs and P&amp;L<br />
 -&gt; attribution and robustness<br />
@@ -900,7 +744,7 @@ Build a modular research system with a single direction of data flow. Notebooks 
 
 ## 10.1 Core interfaces
 
-| **Module** | **Input** | **Output** | **Non-negotiable test** |
+| **Interface** | **Input** | **Output** | **Non-negotiable test** |
 |----|----|----|----|
 | **Data ingestion** | Source API/file configuration | Versioned raw files plus metadata | Same command recreates the same raw snapshot or documents revisions. |
 | **Cleaning** | Raw series | Aligned clean series | No future-fill across unavailable observations; missingness report produced. |
@@ -936,7 +780,7 @@ Recommended display convention: let S be EUR/GBP, measured as pounds per euro. A
 
 The implementation should separately store spot-price contribution, carry/forward contribution, transaction cost and total return. The exact forward formula must be written in the chosen numeraire and validated against a numerical example and, where possible, a vendor-calculated return.
 
-For Module A's 1M EUR/GBP forward strategy, use the forward maturity/rebalancing convention in Section 3.4.4. The primary implementation is a weekly constant-maturity reset. An existing residual-maturity forward must be marked using the current forward rate for its original settlement date, not today's fresh 1M forward rate.
+For the 1M EUR/GBP forward strategy, use the forward maturity/rebalancing convention in Section 3.4.4. The primary implementation is a weekly constant-maturity reset. An existing residual-maturity forward must be marked using the current forward rate for its original settlement date, not today's fresh 1M forward rate.
 
 ## 11.2 Rates implementation hierarchy
 
@@ -980,13 +824,13 @@ Store both leg contributions. If the result is driven almost entirely by one mar
 
 A curve trade should not be included merely because the concept list mentions steepeners and flatteners. The project must specify the macro mechanism that maps relative policy divergence into front-end versus long-end movement. Use a duration-balanced 2s10s structure within each market, then compare UK and Germany or construct a relative slope trade. Treat this as conditional core: include only after the sign, weights and economic hypothesis are explicit.
 
-The current relative-UK-flattener working hypothesis, four-leg construction, balancing and approval/sign-test gate are in Section 3.4.8. D011 remains OPEN for production approval.
+The current relative-UK-flattener working hypothesis, four-leg construction, balancing and approval/sign-test gate are in Section 3.4.7. D011 remains OPEN for production approval.
 
 ## 11.5 Cross-asset basket
 
 The primary basket should be transparent. Equal-risk weighting is preferred to optimising historical Sharpe. Candidate construction: combine the best-defined FX and short-end rates expressions, each scaled to the same ex-ante volatility contribution, then apply a portfolio-level cap. Report correlations, marginal risk contribution and component P&L.
 
-Section 3.4.9 defines the intended FX-plus-2Y core and separate incremental 10Y/curve questions. D012 remains OPEN; no unapproved expression enters the primary basket.
+Section 3.4.8 defines the intended FX-plus-2Y core and separate incremental 10Y/curve questions. D012 remains OPEN; no unapproved expression enters the primary basket.
 
 ## 11.6 Mandatory manual scenarios
 
@@ -1012,11 +856,10 @@ Use a ladder that starts with interpretable baselines and adds complexity only w
 | **1** | Equal-weight standardised 1w/4w changes in matched 6M/1Y OIS differentials | Working primary candidate; 2Y horizon robustness and level-only benchmark separate. |
 | **2** | Carry and/or trend | Benchmarks/diagnostics; any later signal extension requires its own pre-specified decision. |
 | **3** | Regime-conditioned version using pre-specified state variables | Secondary analysis, not a free-form search. |
-| **Event** | UKMPD and EA-MPD surprise factors | Separate causal/event-study module. |
 
 ## 12.2 Working primary composite
 
-Section 3.4.1 contains the authoritative working formula, inputs, units and timing. It supersedes the original illustrative 2Y level/change/carry composite. The primary working signal contains only matched 6M/1Y OIS repricing, with fixed equal weights; differential levels, FX carry and trend remain separate benchmarks/diagnostics. D015 remains CANDIDATE and standardisation/scaling rules must be settled before holdout evaluation.
+Section 3.4.1 contains the authoritative working formula, inputs, units and timing. The primary working signal contains only matched 6M/1Y OIS repricing, with fixed equal weights; differential levels, FX carry and trend remain separate benchmarks/diagnostics. D015 remains CANDIDATE and standardisation/scaling rules must be settled before holdout evaluation.
 
 ## 12.3 Timing contract
 
@@ -1086,53 +929,54 @@ Use low, central and stressed scenarios. Where historical bid-ask data is unavai
 
 - Report the number of material specifications tried and preserve all principal results.
 
-# 14. Event-study module
+# 14. Expression comparison and conclusions
 
-## 14.1 Design principles
+Compare approved expressions driven by the same weekly signal on a common ex-ante risk basis. Use the benchmark ladder in Section 4.1, backtest outputs in Section 13.2 and reconciled attribution/robustness evidence in Section 15. Evaluate the development sample and walk-forward evidence before methodology freeze and final holdout inspection.
 
-- Treat UKMPD and EA-MPD as distinct databases with separate windows and factor definitions.
+## 14.1 Comparison scorecard
 
-- Create a cross-database sign map so positive means relatively hawkish UK policy.
-
-- Standardise factors only when comparing magnitudes; keep raw basis-point effects available.
-
-- Analyse decision and press-conference windows separately where available.
-
-- Separate contemporaneous response regressions from post-window implementable returns.
-
-- Use HAC or appropriate uncertainty methods when horizons overlap.
-
-## 14.2 Core event outputs
-
-| **Question** | **Output** |
+| **Dimension** | **Questions** |
 |----|----|
-| **Which expression reacts most strongly per unit of surprise?** | Shock beta table with confidence intervals across FX, 2Y, 10Y and curve/basket. |
-| **Does response vary by policy dimension?** | Target/path/QE or closest available factor comparison. |
-| **Does the move continue or reverse?** | Cumulative post-event return profiles at 1, 5 and 20 business days. |
-| **Are hawkish and dovish surprises asymmetric?** | Signed interaction or split-sample results with sample counts. |
-| **Did communication regime changes matter?** | Pre-specified communication-era analysis, cautiously interpreted. |
-| **Is apparent significance concentrated?** | Leave-one-event-out or influential-event diagnostics. |
+| **Signal sensitivity** | Which expressions load most consistently on the common weekly policy-repricing signal? |
+| **Risk efficiency** | After common ex-ante volatility normalisation, which expression offers the best return per unit of intended risk? |
+| **Contamination** | Are results driven by global risk sentiment, fiscal shocks, term premium, broad currency moves or one crisis episode? |
+| **Implementability** | What survives realistic carry, roll, turnover, transaction costs and execution lags? |
+| **Robustness** | Does the ranking persist across samples, regimes, horizons, rebalance timing and instrument construction? |
+| **Interpretability** | Can the return be reconciled to transparent market mechanics rather than a post-hoc story? |
+
+## 14.2 Conditional conclusions and basket evaluation
+
+Answer which expression carries weekly relative policy repricing most cleanly, at which horizons and in which regimes. Short rates may track the expected policy path more closely; forwards incorporate currency movement and carry; long-end and curve positions may contain more term-premium or fiscal risk. A basket may trade peak performance for stability. These are hypotheses to test, not conclusions to force.
+
+Construct the basket only after standalone validation. Section 3.4.8 sets out the intended forward-plus-2Y core and the separate incremental 10Y/curve questions; D012 controls membership approval. Assess diversification, marginal risk, drawdown, regime stability and net performance after extra costs. Freeze the inclusion rule before opening the holdout.
+
+Where available, compare futures with exact constant-maturity synthetic returns, and the provisional calendar roll with the pre-specified liquidity-migration roll. Explain any ranking change as an implementation finding.
 
 # 15. Attribution, regimes and robustness
 
-## 15.1 Attribution tree
+## 15.1 Required attribution
 
-- FX: spot-price movement, carry/forward points, transaction costs and scaling effect.
+Attribution components must reconcile to total P&L within tolerance. For rates, show carry/roll and any relevant convexity approximation separately from country-leg price P&L; retain the net curve component as well as each maturity leg. Preserve native country-leg P&L and common-currency reporting; avoid double-counting price, carry, roll and costs.
 
-- Rates: UK leg, German leg, carry/roll, convexity approximation if relevant and costs.
+| **Expression** | **Attribution to show** |
+|----|----|
+| **FX forward** | Spot movement; forward/carry component; transaction costs; scaling effect. |
+| **2Y / 10Y spread** | UK/German legs; common-currency DV01; active contracts and CTD/maturity metadata; signal turnover versus roll turnover/costs; carry/roll where available; futures-versus-synthetic differences. |
+| **Curve trade** | Each maturity and country leg; net curve component; duration balance. |
+| **Basket** | Contribution from each component; covariance/diversification effect; equal-weight versus equal-risk difference. |
+| **All strategies** | Event versus non-event P&L; regime contribution; gross versus net; unscaled versus scaled. |
 
-- Basket: component P&L, risk contribution and diversification benefit.
+The weekly strategy carries its latest target through scheduled BoE and ECB meetings (D025). Split its existing-position P&L into policy-meeting and non-meeting days, report counts and concentration, and identify whether a few meetings dominate results. Meeting labels explain exposure; they do not alter the weekly signal or execution schedule. Any simple meeting de-risking robustness check must be pre-specified, with no search over reduction percentages or re-entry timings.
 
-- Timing: event days versus non-event days; immediate versus post-event horizon.
-
-- State: high/low volatility, tightening/easing, normal/stress periods and pre-specified structural eras.
+Use pre-specified state definitions such as high/low volatility, tightening/easing, normal/stress periods and structural eras. Freeze them before regime analysis and methodology freeze.
 
 ## 15.2 Pre-committed robustness matrix
 
 | **Dimension** | **Primary** | **Robustness variants** |
 |----|----|----|
 | **Frequency** | Weekly | Monthly; daily only as diagnostic. |
-| **Signal horizon** | One selected horizon | Alternative one-, two- and four-week constructions. |
+| **Signal lookbacks** | Fixed equal-weight one-week/four-week repricing at 6M/1Y | Pre-specified alternative one-, two- and four-week constructions; matched 2Y horizon robustness. |
+| **Signal strength** | Documented map, subject to D015 approval | Optional pre-specified sign-only versus capped magnitude-scaled weekly signal. |
 | **Volatility** | Lagged rolling estimate | Expanding estimate; unscaled returns. |
 | **Costs** | Central | Low, stressed and break-even. |
 | **Sample** | Full development/validation | Exclude 2020; exclude 2022 UK stress; structural eras. |
@@ -1161,23 +1005,23 @@ Use low, central and stressed scenarios. Where historical bid-ask data is unavai
 
 # 16. Timeline at a glance
 
-Four project weeks are complete; the next reporting period is Week 5. Design, scaffolding and first public-data feasibility checks are evidenced. Bloomberg market-data validation, the instrument engine, the MVP, event analysis and final outputs remain outstanding. [CURRENT_STATE.md](../project/CURRENT_STATE.md) maintains the actual week and milestone status.
+Four project weeks are complete; the next reporting period is Week 5. Design, scaffolding and first public-data feasibility checks are evidenced. Bloomberg market-data validation, the instrument engine, the MVP and final outputs remain outstanding. [CURRENT_STATE.md](../project/CURRENT_STATE.md) maintains the actual week and milestone status.
 
 Use another 10 weeks as the working planning case, with an 8-week completion possible if data gates resolve promptly and overlapping work is practical. That gives an indicative finish around project Weeks 12-14, with no fixed completion deadline. The lead can contribute at most 4 hours per day alongside employment. The 16-20 hour weekly budget below assumes 4-5 available working days and is a planning assumption, not a commitment; revise throughput when actual availability differs. Collaborator time helps but is not required to justify the estimate.
 
-The table allocates the remaining work against the existing project-week counter. Ranges are indicative planning windows, not automatic gate dates. Writing, reading and attribution checks run alongside implementation. The shorter case overlaps event work once suitable returns are validated and keeps the dashboard compact; it does not skip tests or open the holdout early. Data or validation delays extend the plan as needed without lowering the quality bar or silently adding scope.
+The table allocates the remaining work against the existing project-week counter. Ranges are indicative planning windows, not automatic gate dates. Writing, reading and attribution checks run alongside implementation. The shorter case overlaps independent evaluation and writing once suitable returns are validated and keeps the dashboard compact; it does not skip tests or open the holdout early. Data or validation delays extend the plan as needed without lowering the quality bar or silently adding scope.
 
 | **Indicative project weeks** | **Remaining milestone** | **Primary objective** | **Exit gate** |
 |----|----|----|----|
 | **5-6** | Data approval and remaining design gates | Validate Bloomberg OIS, residual-tenor forwards and futures inputs; settle conventions, approved trade set, sample and holdout. | Reproducible exports, data matrix, approved return construction and locked holdout before performance exploration. |
 | **7-8** | Data pipeline and instrument engine | Build reproducible ingestion and every approved return series, starting with FX and 2Y. | Manual scenarios and automated sign/reconciliation tests pass; return labels and timing are documented. |
-| **9-10** | Module A MVP and Module B | Run the common signal, lagged risk, costs and benchmarks; add identified event responses and defensible post-event analysis. | One-command development-sample MVP; leakage audit passes; event outputs reconcile and entry rules are explicit. |
-| **11-12** | Development robustness, freeze and Module C | Challenge the design on development/walk-forward evidence; freeze the specification before opening the holdout; complete comparison and attribution. | D019 freeze recorded before holdout inspection; pre-agreed evaluation complete; P&L attribution reconciles. |
+| **9-10** | Weekly strategy MVP | Run the common OIS signal, lagged risk, costs and benchmarks across validated expressions. | One-command development-sample MVP; leakage audit and P&L reconciliation pass. |
+| **11-12** | Development robustness, freeze and expression comparison | Challenge the design on development/walk-forward evidence; freeze the specification before opening the holdout; complete comparison and attribution. | D019 freeze recorded before holdout inspection; pre-agreed evaluation complete; P&L attribution reconciles. |
 | **13-14** | Product, report and independent QA | Finish a compact dashboard and note; independently reproduce results, red-team claims and prepare the demo. | Definition of done evidenced; principal outputs rebuild from a clean environment. |
 
 # 17. Detailed milestone workstreams
 
-These are implementation phases within the forward plan, not a second week counter. Close the remaining gaps in each phase, reuse verified work, and move on when its exit gate passes. Event-data preparation, writing and cross-review can overlap other phases; downstream financial analysis depends on validated inputs and instrument returns.
+These are implementation phases within the forward plan, not a second week counter. Close the remaining gaps in each phase, reuse verified work, and move on when its exit gate passes. Data preparation, writing and cross-review can overlap other phases; downstream financial analysis depends on validated inputs and instrument returns.
 
 ## Phase 1 - Complete research design and feasibility
 
@@ -1185,7 +1029,7 @@ These are implementation phases within the forward plan, not a second week count
 
 ### Workstreams
 
-**Research and fundamentals:** Read the three monetary-policy identification sources first; complete targeted FX/rates mechanics notes; start the literature matrix.
+**Research and fundamentals:** Complete targeted OIS, FX/rates mechanics and evaluation notes using the focused literature matrix.
 
 **Project governance:** Approve charter, scope exclusions, role split, repository rules, decision log and weekly meetings.
 
@@ -1301,47 +1145,7 @@ These are implementation phases within the forward plan, not a second week count
 </tbody>
 </table>
 
-## Phase 4 - Monetary-policy event analysis
-
-*Objective: add the most distinctive empirical layer and link it cleanly to the trade-expression question.*
-
-### Workstreams
-
-**Event data:** Ingest UKMPD and EA-MPD; document windows, factors, updates and sign mapping.
-
-**Event study:** Set rules before viewing the corresponding results; estimate contemporaneous responses across expressions and policy dimensions using the development sample.
-
-**Post-event returns:** Measure continuation/reversal at pre-specified horizons without pretending pre-event execution.
-
-**Diagnostics:** Check sample size, influential events, hawkish/dovish asymmetry and communication eras.
-
-### Required outputs
-
-- Clean event dataset
-
-- Shock beta and response tables
-
-- Post-event profiles
-
-- Event-methodology section
-
-- Independent sign review
-
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<thead>
-<tr>
-<th><p><strong>Milestone exit gate</strong></p>
-<p>contemporaneous and implementable analyses are clearly separated.</p></th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
-
-## Phase 5 - Development robustness, freeze and holdout evaluation
+## Phase 4 - Development robustness, freeze and holdout evaluation
 
 *Objective: attack the project before anyone else can.*
 
@@ -1351,11 +1155,11 @@ These are implementation phases within the forward plan, not a second week count
 
 **Costs:** Apply low/central/stressed assumptions and calculate break-even costs.
 
-**Freeze:** After instrument, MVP, event and development-validation checks pass, record the approved signal, expressions, timing, risk, costs, event rules, sample, benchmarks and robustness plan in a dated configuration and D019 freeze note. Do this before final holdout inspection.
+**Freeze:** After instrument, MVP and development-validation checks pass, record the approved signal, expressions, timing, risk, costs, policy-meeting exposure, sample, benchmarks and robustness plan in a dated configuration and D019 freeze note. Do this before final holdout inspection.
 
 **Out-of-sample:** Only after that freeze, open the locked holdout and run the pre-agreed evaluation. Record any subsequent bug fix and its impact; do not tune the design to holdout results.
 
-**Interpretation:** Identify failure regimes, result concentration and contradictions between modules. Complete Module C comparisons and reconcile attribution alongside this evaluation.
+**Interpretation:** Identify failure regimes, result concentration and differences between expressions. Complete the common-risk comparison and reconcile attribution alongside this evaluation.
 
 ### Required outputs
 
@@ -1383,7 +1187,7 @@ These are implementation phases within the forward plan, not a second week count
 </tbody>
 </table>
 
-## Phase 6 - Attribution, dashboard and report
+## Phase 5 - Attribution, dashboard and report
 
 *Objective: turn correct research into a usable and memorable markets product.*
 
@@ -1423,7 +1227,7 @@ These are implementation phases within the forward plan, not a second week count
 </tbody>
 </table>
 
-## Phase 7 - Red team and final delivery
+## Phase 6 - Red team and final delivery
 
 *Objective: remove fragility, simplify the story and prove reproducibility.*
 
@@ -1501,8 +1305,7 @@ The exact split should reflect skills, but the recommended default below suits a
 | **Charter, hypotheses and literature** | Lead researcher | Collaborator | Both can defend the research question. |
 | **Data ingestion and calendars** | Collaborator | Lead researcher | Both understand source definitions and missingness. |
 | **FX and rates instrument construction** | Collaborator | Lead researcher | Independent sign and P&L review. |
-| **Slow divergence signal** | Lead researcher | Collaborator | Both understand timing and benchmarks. |
-| **UKMPD/EA-MPD event module** | Lead researcher | Collaborator | Both understand factor mapping and event windows. |
+| **Weekly OIS policy-repricing signal** | Lead researcher | Collaborator | Both understand timing and benchmarks. |
 | **Risk and backtest engine** | Collaborator | Lead researcher | Both reconcile toy examples. |
 | **Robustness and attribution** | Lead researcher | Collaborator | Both challenge interpretation. |
 | **Dashboard and report** | Shared; one integration owner | Other contributor | Both present the project. |
@@ -1673,11 +1476,10 @@ The finished project is a working research system first and a written note secon
 |----|----|----|
 | **1. Current state** | What is the latest relative-policy signal? | Signal, components, latest data date, direction, confidence/caveat and proposed positions. |
 | **2. Expression comparison** | How did FX, 2Y, 10Y, curve and basket behave? | Risk-normalised cumulative returns, table of gross/net metrics and correlation. |
-| **3. Events** | Which instruments reacted to BoE/ECB surprises? | Shock betas, event profiles, factor filters and event counts. |
-| **4. Attribution** | Where did P&L come from? | Spot/carry, UK/German legs, basket components, costs and scaling. |
-| **5. Regimes and failures** | When did the conclusions change or fail? | Regime matrix, worst periods, influential events and concentration. |
-| **6. Robustness** | How sensitive are results to reasonable choices? | Complete pre-agreed sensitivity grid and holdout marker. |
-| **7. Methodology** | Can the analysis be audited? | Data sources, sample, timing, costs, return labels and limitations. |
+| **3. Attribution** | Where did P&L come from? | Spot/carry, UK/German legs, basket components, costs and scaling. |
+| **4. Regimes and failures** | When did the conclusions change or fail? | Regime matrix, worst periods, influential events and concentration. |
+| **5. Robustness** | How sensitive are results to reasonable choices? | Complete pre-agreed sensitivity grid and holdout marker. |
+| **6. Methodology** | Can the analysis be audited? | Data sources, sample, timing, costs, return labels and limitations. |
 
 <table>
 <colgroup>
@@ -1702,9 +1504,9 @@ Target approximately 12-18 pages of core content plus appendices. The note shoul
 | **Executive summary** | Question, design, two or three findings, limitations and practical implication. | 1 page |
 | **Motivation and hypotheses** | Why trade expression matters and what the project tests. | 1-2 pages |
 | **Markets and instrument mechanics** | FX forward, rates spread, curve and basket intuition. | 2 pages |
-| **Data** | Sources, sample, event databases, timing and caveats. | 1-2 pages |
-| **Methodology** | Signals, P&L construction, risk, costs, event study and inference. | 3-4 pages |
-| **Results** | Primary comparison, event results and benchmarks. | 3-4 pages |
+| **Data** | Sources, common sample, timestamps and caveats. | 1-2 pages |
+| **Methodology** | Signals, P&L construction, risk, costs and inference. | 3-4 pages |
+| **Results** | Primary expression comparison and benchmarks. | 3-4 pages |
 | **Attribution and regimes** | Mechanisms, failure cases and concentration. | 2-3 pages |
 | **Robustness and holdout** | Sensitivity grid and honest out-of-sample evidence. | 2 pages |
 | **Conclusion** | Conditional answer to the north-star question and next steps. | 1 page |
@@ -1712,7 +1514,7 @@ Target approximately 12-18 pages of core content plus appendices. The note shoul
 
 ## 25.1 Claim standard
 
-- State whether a result is descriptive, predictive, causal/event-study or implementable.
+- State whether a result is descriptive, predictive or implementable.
 
 - Use conditional language when uncertainty or regime dependence is material.
 
@@ -1722,7 +1524,7 @@ Target approximately 12-18 pages of core content plus appendices. The note shoul
 
 - Report sample counts, uncertainty and the full relevant comparison beside headline metrics.
 
-- Discuss contradictory evidence rather than forcing every module into one narrative.
+- Discuss contradictory evidence and explain differences between expressions.
 
 # 26. Presentation and interview package
 
@@ -1730,7 +1532,7 @@ Target approximately 12-18 pages of core content plus appendices. The note shoul
 
 - The trading problem: the same macro view can succeed or fail depending on expression.
 
-- The system: data, instrument engine, signals, risk, backtest, event study and attribution.
+- The system: data, instrument engine, weekly signal, risk, backtest and attribution.
 
 - The most important construction decision: economically correct, risk-normalised returns.
 
@@ -1772,7 +1574,7 @@ AI can materially improve speed, documentation and debugging, but it can also cr
 
 - Do not merge AI-generated code until both collaborators understand it and tests pass.
 
-- Ask for minimal reproducible patches rather than wholesale rewrites of working modules.
+- Ask for minimal reproducible patches rather than wholesale rewrites of working calculations.
 
 - Verify all paper claims, series codes and market conventions against primary sources.
 
@@ -1798,13 +1600,13 @@ Success is multi-dimensional. There is deliberately no required Sharpe ratio or 
 
 \[ \] All expressions are compared on a common ex-ante risk basis and gross/net results are shown.
 
-\[ \] The event module separates contemporaneous response from implementable post-event trading.
+\[ \] Policy-meeting P&L is attributed to the existing weekly position and reconciles with non-meeting P&L.
 
 \[ \] The report discloses limitations and failed tests.
 
 ## 28.2 Strong project standard
 
-\[ \] The slow-divergence and event modules produce a coherent comparative picture or explain why they differ.
+\[ \] The common weekly signal supports a fair comparison, with differences between expressions explained.
 
 \[ \] Attribution identifies the mechanisms behind performance, drawdowns and ranking changes.
 
@@ -1812,7 +1614,7 @@ Success is multi-dimensional. There is deliberately no required Sharpe ratio or 
 
 \[ \] A new user can navigate the dashboard and understand the current signal and historical evidence.
 
-\[ \] Both collaborators can explain all major modules without referring to a black box.
+\[ \] Both collaborators can explain all major calculations without referring to a black box.
 
 ## 28.3 Exceptional project standard
 
@@ -1835,7 +1637,6 @@ Success is multi-dimensional. There is deliberately no required Sharpe ratio or 
 | **Instruments** | Formulas, manual scenarios, automated tests and independent review. |
 | **Signals** | Timing contract, component definitions and full specification log. |
 | **Backtest** | Toy reconciliation, risk/cost configuration, gross/net outputs and no leakage findings. |
-| **Events** | Factor map, event counts, contemporaneous/post-event separation and influence diagnostics. |
 | **Robustness** | Complete pre-agreed matrix, holdout result and failure-case memo. |
 | **Attribution** | Components reconcile to total P&L within tolerance. |
 | **Engineering** | Clean clone builds principal outputs in a fixed environment. |
@@ -1849,12 +1650,12 @@ Success is multi-dimensional. There is deliberately no required Sharpe ratio or 
 | **Rates P&L constructed from raw yield changes** | Results exist before duration/price method is documented. | Block signal work; implement actual or synthetic price returns; require manual scenarios. | Instrument owner |
 | **FX sign/numeraire error** | Charts and verbal interpretation disagree. | Single convention sheet, numerical examples and unit tests. | Both |
 | **Look-ahead leakage** | Same close used for signal and assumed execution; revised data used unknowingly. | Timestamp contract, lagged features, code review and explicit execution index. | Backtest owner |
-| **Scope creep** | New modules appear while core tests remain incomplete. | Four-category scope hierarchy; one pre-authorised secondary stretch item maximum after freeze and core validation, subject to capacity. | Lead |
+| **Scope creep** | New features appear while core tests remain incomplete. | Four-category scope hierarchy; one pre-authorised secondary stretch item maximum after freeze and core validation, subject to capacity. | Lead |
 | **Overfitting** | Many parameter grids and selective plots. | Small signal family, experiment log, walk-forward evaluation and locked holdout. | Research owner |
-| **Collaborator black boxes** | Only one person can explain a module. | Mandatory cross-review, walkthrough and final independent replication with roles reversed. | Both |
-| **Integration failure** | Branches diverge; pipeline only works in one notebook. | Frequent merges, module interfaces and full reruns at weekly reviews once implemented. | Integration owner |
+| **Collaborator black boxes** | Only one person can explain a calculation. | Mandatory cross-review, walkthrough and final independent replication with roles reversed. | Both |
+| **Integration failure** | Branches diverge; pipeline only works in one notebook. | Frequent merges, explicit interfaces and full reruns at weekly reviews once implemented. | Integration owner |
 | **Report left until final delivery** | The MVP exists without a written methodology. | Write alongside implementation; complete the draft before final independent QA. | Lead |
-| **Weak final story** | Headline is only a Sharpe ranking with no mechanism. | Attribution, failure periods, event evidence and conditional conclusion. | Both |
+| **Weak final story** | Headline is only a Sharpe ranking with no mechanism. | Attribution, failure periods, policy-meeting concentration and conditional conclusion. | Both |
 | **Data licensing issue** | Raw vendor files cannot be shared. | Separate private data adapters from reproducible public fallback and document access. | Data owner |
 | **Time loss to polishing** | Dashboard work begins before methodology freeze. | Prioritise correctness hierarchy; defer visual polish until the core is validated and methodology frozen. | Lead |
 
@@ -1934,10 +1735,10 @@ We hold the macro view broadly constant and compare implementations rather than 
 5. one economically justified relative curve trade;<br />
 6. a transparent equal-risk rates-FX basket.<br />
 <br />
-RESEARCH MODULES<br />
-A. Slow-moving weekly UK/euro-area policy-divergence signal.<br />
-B. BoE and ECB event-study analysis using UKMPD and EA-MPD.<br />
-C. Risk-normalised expression comparison, attribution, regimes and robustness.<br />
+RESEARCH DESIGN<br />
+One weekly relative-policy signal: equal-weight lagged-standardised 1w/4w changes in matched UK-minus-EA 6M/1Y par OIS differentials; 2Y horizon robustness.<br />
+Apply the same scalar to all approved expressions, with an explicit execution lag and common ex-ante risk basis.<br />
+Compare and explain results through attribution, costs, regimes, robustness and basket evaluation.<br />
 <br />
 KEY CONVENTIONS<br />
 - Display FX price as EUR/GBP unless the decision log says otherwise.<br />
@@ -1955,7 +1756,7 @@ CAPACITY AND REMAINING PLAN<br />
 Use project/CURRENT_STATE.md for the current project week and milestone status.<br />
 As of 2026-10-06, four project weeks are complete; Week 5 is next. The lead is now employed and has at most 4 project hours per day. Planning assumes 16-20 hours across 4-5 available days, including tests and writing; actual availability may be lower.<br />
 Aim for another 8-10 weeks, with indicative completion around project Weeks 12-14 and no fixed deadline. Quality gates determine completion; more time does not automatically expand scope.<br />
-Indicative sequence: Weeks 5-6 data/design approval; 7-8 validated instrument engine; 9-10 Module A MVP and Module B; 11-12 development robustness, methodology freeze before holdout inspection, and Module C; 13-14 compact dashboard, report, independent replication and demo. Work can overlap when its dependencies pass.<br />
+Indicative sequence: Weeks 5-6 data/design approval; 7-8 validated instrument engine; 9-10 weekly strategy MVP; 11-12 development robustness, methodology freeze before holdout inspection, and expression comparison; 13-14 compact dashboard, report, independent replication and demo. Work can overlap when its dependencies pass.<br />
 The methodology freeze is a readiness gate, not a week number. Record the approved configuration and actual date before final holdout inspection; afterwards allow bug fixes and pre-agreed tests only. Bloomberg Terminal access is guaranteed, but exported fields, histories and instrument inputs still need validation.<br />
 <br />
 AI INSTRUCTIONS<br />
@@ -1991,7 +1792,7 @@ FROZEN DECISIONS:<br />
 <br />
 CURRENT TASK:<br />
 <br />
-FILES / MODULES INVOLVED:<br />
+FILES / CALCULATIONS INVOLVED:<br />
 <br />
 KNOWN LIMITATIONS OR OPEN QUESTIONS:<br />
 <br />
@@ -2010,7 +1811,7 @@ WHAT A GOOD ANSWER MUST PRODUCE:</th>
 </colgroup>
 <thead>
 <tr>
-<th>Act as a sceptical cross-asset macro researcher and code reviewer. Review the supplied module or result for:<br />
+<th>Act as a sceptical cross-asset macro researcher and code reviewer. Review the supplied calculation or result for:<br />
 1. economic meaning and sign;<br />
 2. units and numeraire;<br />
 3. timestamp and look-ahead leakage;<br />
@@ -2036,7 +1837,7 @@ Return: (a) release-blocking issues, (b) important improvements, (c) optional re
 |----|----|
 | **North-star question** | \[Approved wording\] |
 | **Why it matters** | \[Markets/trading motivation\] |
-| **Core modules** | \[Slow divergence; events; comparison/attribution\] |
+| **Research design** | \[Weekly OIS repricing; common-risk expression comparison and attribution\] |
 | **Core trade expressions** | \[Approved after data gate\] |
 | **Explicit exclusions** | \[Out-of-scope list\] |
 | **Primary hypotheses** | \[H1-H5\] |
@@ -2067,11 +1868,11 @@ Return: (a) release-blocking issues, (b) important improvements, (c) optional re
 
 \[ \] Next week's three critical deliverables and owners:
 
-# B3. Module specification template
+# B3. Calculation specification template
 
 | **Field** | **Question to answer** |
 |----|----|
-| **Purpose** | What economic or engineering problem does this module solve? |
+| **Purpose** | What economic or engineering problem does this calculation solve? |
 | **Inputs** | Exact series, units, sign and availability timestamp. |
 | **Outputs** | Exact object, units, index and metadata. |
 | **Formula / logic** | Transparent definition with references. |
@@ -2109,37 +1910,31 @@ Return: (a) release-blocking issues, (b) important improvements, (c) optional re
 
 *Primary external references checked when this manual was prepared.*
 
-# C1. Data and event-study sources
+# C1. Market-data sources
 
-**\[1\] Measuring monetary policy in the UK: the UK Monetary Policy Event-Study Database.** Bank of England Staff Working Paper No. 1,050. [<u>https://www.bankofengland.co.uk/working-paper/2023/measuring-monetary-policy-in-the-uk-ukmpd</u>](https://www.bankofengland.co.uk/working-paper/2023/measuring-monetary-policy-in-the-uk-ukmpd) *The Bank page states that the database was revised and updated in April 2026.*
+**\[1\] Yield curves.** Bank of England. [<u>https://www.bankofengland.co.uk/statistics/yield-curves</u>](https://www.bankofengland.co.uk/statistics/yield-curves) *Official daily estimated gilt and sterling OIS curves; understand publication timing and curve methodology.*
 
-**\[2\] Measuring euro area monetary policy.** European Central Bank Working Paper No. 2281. [<u>https://www.ecb.europa.eu/pub/pdf/scpwps/ecb.wp2281~3303fd281b.en.pdf</u>](https://www.ecb.europa.eu/pub/pdf/scpwps/ecb.wp2281~3303fd281b.en.pdf)
+**\[2\] Daily yields of current Federal securities.** Deutsche Bundesbank. [<u>https://www.bundesbank.de/en/statistics/money-and-capital-markets/interest-rates-and-yields/daily-yields-of-current-federal-securities-772220</u>](https://www.bundesbank.de/en/statistics/money-and-capital-markets/interest-rates-and-yields/daily-yields-of-current-federal-securities-772220) *Includes downloadable daily two-year and ten-year German federal-security yields.*
 
-**\[3\] Yield curves.** Bank of England. [<u>https://www.bankofengland.co.uk/statistics/yield-curves</u>](https://www.bankofengland.co.uk/statistics/yield-curves) *Official daily estimated gilt and sterling OIS curves; understand publication timing and curve methodology.*
-
-**\[4\] Daily yields of current Federal securities.** Deutsche Bundesbank. [<u>https://www.bundesbank.de/en/statistics/money-and-capital-markets/interest-rates-and-yields/daily-yields-of-current-federal-securities-772220</u>](https://www.bundesbank.de/en/statistics/money-and-capital-markets/interest-rates-and-yields/daily-yields-of-current-federal-securities-772220) *Includes downloadable daily two-year and ten-year German federal-security yields.*
-
-**\[5\] ECB Data Portal web-service documentation.** European Central Bank. [<u>https://data.ecb.europa.eu/help/api/data</u>](https://data.ecb.europa.eu/help/api/data) *Programmatic SDMX data retrieval and metadata discovery.*
+**\[3\] ECB Data Portal web-service documentation.** European Central Bank. [<u>https://data.ecb.europa.eu/help/api/data</u>](https://data.ecb.europa.eu/help/api/data) *Programmatic SDMX data retrieval and metadata discovery.*
 
 # C2. Foundational research
 
-**\[6\] Do Actions Speak Louder Than Words? The Response of Asset Prices to Monetary Policy Actions and Statements.** Federal Reserve Board FEDS 2004-66. [<u>https://www.federalreserve.gov/pubs/feds/2004/200466/200466abs.html</u>](https://www.federalreserve.gov/pubs/feds/2004/200466/200466abs.html)
+**\[4\] Forward and Spot Exchange Rates.** Eugene F. Fama, Journal of Monetary Economics (1984). [<u>https://www.sciencedirect.com/science/article/abs/pii/0304393284900461</u>](https://www.sciencedirect.com/science/article/abs/pii/0304393284900461)
 
-**\[7\] Forward and Spot Exchange Rates.** Eugene F. Fama, Journal of Monetary Economics (1984). [<u>https://www.sciencedirect.com/science/article/abs/pii/0304393284900461</u>](https://www.sciencedirect.com/science/article/abs/pii/0304393284900461)
+**\[5\] Currency Momentum Strategies.** BIS Working Papers No. 366. [<u>https://www.bis.org/publ/work366.htm</u>](https://www.bis.org/publ/work366.htm)
 
-**\[8\] Currency Momentum Strategies.** BIS Working Papers No. 366. [<u>https://www.bis.org/publ/work366.htm</u>](https://www.bis.org/publ/work366.htm)
+**\[6\] Common Risk Factors in Currency Markets.** NBER Working Paper 14082. [<u>https://www.nber.org/papers/w14082</u>](https://www.nber.org/papers/w14082)
 
-**\[9\] Common Risk Factors in Currency Markets.** NBER Working Paper 14082. [<u>https://www.nber.org/papers/w14082</u>](https://www.nber.org/papers/w14082)
+**\[7\] Bond Risk Premia.** American Economic Association. [<u>https://www.aeaweb.org/articles?id=10.1257%2F0002828053828581</u>](https://www.aeaweb.org/articles?id=10.1257%2F0002828053828581)
 
-**\[10\] Bond Risk Premia.** American Economic Association. [<u>https://www.aeaweb.org/articles?id=10.1257%2F0002828053828581</u>](https://www.aeaweb.org/articles?id=10.1257%2F0002828053828581)
-
-**\[11\] The Probability of Backtest Overfitting.** Bailey, Borwein, Lopez de Prado and Zhu. [<u>https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf</u>](https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf)
+**\[8\] The Probability of Backtest Overfitting.** Bailey, Borwein, Lopez de Prado and Zhu. [<u>https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf</u>](https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf)
 
 ## C3. Source-use discipline
 
 - Verify series identifiers and current download formats directly from the official portals at implementation time.
 
-- Record the date and version of event databases because they can be revised or extended.
+- Record market-data snapshot dates, revisions and the policy-calendar coverage used for diagnostics.
 
 - Do not infer tradability from the existence of an estimated curve.
 
@@ -2161,8 +1956,6 @@ Return: (a) release-blocking issues, (b) important improvements, (c) optional re
 | **DV01-neutral** | Leg quantities selected so first-order rate sensitivity is balanced across the paired positions. |
 | **Synthetic return** | Modelled return derived from curves or theoretical prices rather than a directly observed traded total-return series. |
 | **Proxy return** | Approximate measure used when a more direct return is unavailable; must be labelled and caveated. |
-| **Event response** | Asset change measured around a policy announcement window; not automatically an implementable trading return. |
-| **Post-event return** | Return measured after the surprise window, using a stated executable timing assumption. |
 | **Volatility targeting** | Scaling exposure using a lagged estimate to seek a common ex-ante risk level. |
 | **Holdout** | A locked final sample not used for repeated model selection. |
 | **Methodology freeze** | The point after which the primary model and tests cannot be altered for performance reasons. |
@@ -2174,12 +1967,9 @@ Return: (a) release-blocking issues, (b) important improvements, (c) optional re
 | **Carry and roll-down** | Holding-period and movement-along-curve components, distinguished from yield-repricing effects under the chosen attribution convention. |
 | **Observed tradable return** | Return constructed from observed tradable futures, total-return or other validated instrument data. |
 | **Approximate proxy** | Diagnostic approximation, never described as an observed market trade. |
-| **Signal-definition data** | Data defining the economic view, such as matched OIS differentials or surprise factors. |
+| **Signal-definition data** | Data defining the economic view, such as matched OIS differentials and their repricing. |
 | **Tradable expression** | Instrument or portfolio in which a position generates P&L. |
 | **Diagnostic** | Series/calculation explaining market behaviour without approval as a primary expression. |
-| **Contemporaneous event response** | Announcement-window market movement used as identification evidence, not automatically implementable trading P&L. |
-| **Implementable post-event strategy** | Strategy entering after the surprise is observable and a defensible execution price is available. |
-| **Module A baseline / Module B overlay** | Latest continuously held weekly target / temporary reactive event position, combined only with netting, common risk caps and separate attribution. |
 
 # Closing instruction
 
