@@ -17,7 +17,8 @@ Before making material changes, read:
 1. [project/CURRENT_STATE.md](project/CURRENT_STATE.md)
 2. [project/DECISIONS.md](project/DECISIONS.md)
 3. [docs/index.md](docs/index.md)
-4. The topic-specific documentation relevant to the task
+4. [docs/project_bible.md](docs/project_bible.md), especially Section 3 for the revised Module A/B/C practical architecture
+5. The topic-specific documentation relevant to the task
 
 For changes affecting economic definitions, signs, returns, timing, risk, transaction costs, backtesting, event studies or attribution, also consult [docs/project_bible.md](docs/project_bible.md).
 
@@ -29,7 +30,7 @@ Do not treat an explanatory candidate in the documentation as a frozen decision.
 - Module B: BoE and ECB monetary-policy event analysis using UKMPD and EA-MPD.
 - Module C: risk-normalised expression comparison, attribution, regimes and robustness.
 
-These are research workstreams, not necessarily individual Python files.
+These are research workstreams, not necessarily individual Python files. Module A and Module B generate two information structures for the same relative-policy view; candidate or approved expressions are where the view is tested; Module C compares, attributes and explains the results.
 
 ## Core conventions
 

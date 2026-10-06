@@ -4,16 +4,23 @@ This directory contains the research, methodology and implementation documentati
 
 | File | Purpose |
 |---|---|
-| [project_bible.md](project_bible.md) | Complete canonical project specification |
+| [project_bible.md](project_bible.md) | Canonical specification: latest Modules A/B/C approach, remaining milestone plan, capacity and glossary |
 | [research_design.md](research_design.md) | North-star question, modules, scope and hypotheses |
 | [conventions.md](conventions.md) | FX signs, rates positions, units, numeraires and timestamps |
 | [instruments.md](instruments.md) | FX forwards, rates spreads, curve trades and basket construction |
 | [data_sources.md](data_sources.md) | Data families, definitions, availability and audit requirements |
+| [data_feasibility_audit.md](data_feasibility_audit.md) | Historical public-data audit plus current Bloomberg access and validation requirements |
 | [methodology.md](methodology.md) | Signals, event studies, risk, costs, backtesting and attribution |
-| [roadmap.md](roadmap.md) | Seven-week plan, deliverables and milestone gates |
 | [quality_standards.md](quality_standards.md) | Testing, robustness, holdout and definition of done |
-| [glossary.md](glossary.md) | Canonical terminology used across code and reporting |
 | [tradable_assets_source.md](tradable_assets_source.md) | Direct Markdown conversion of the supplementary assets document |
+
+## Source Documents
+
+Original and supplementary source files are preserved under [source/](source/), including the latest [Modules A/B/C practical specification](source/UK_EU_Rates_FX_Modules_A_B_C_Practical_Specification_Signal_Updated.docx). Its working context is integrated into [project_bible.md](project_bible.md); the decision register still controls approval/freeze status.
+
+The [Project Bible Word source](source/project_bible_original.docx) and [tradable-assets Word source](source/tradable_assets_original.docx) are kept here. Duplicate root copies have been removed after comparing their content; use `docs/source/` for preserved Word documents.
+
+The Bible holds the remaining milestone plan and capacity assumptions (Sections 16-18) and glossary (Appendix D). Short instrument, convention, source and methodology references remain for implementation review; the separate roadmap/glossary summaries have been removed.
 
 ## Operational project records
 

@@ -1,5 +1,5 @@
 # Sample-split configuration.
-# Dates remain null until the Week 1 holdout and common-sample decisions.
+# Dates remain null until the holdout and common-sample decisions are recorded.
 
 common_sample_start: null
 common_sample_end: null

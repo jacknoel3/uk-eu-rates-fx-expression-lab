@@ -11,7 +11,7 @@ requires-python = ">=3.11"
 license = { text = "Proprietary" }
 authors = []
 dependencies = [
-  # Runtime dependencies will be selected after the Week 1 feasibility review.
+  # Runtime dependencies will be selected after the data-feasibility approval gate.
 ]
 
 [project.optional-dependencies]

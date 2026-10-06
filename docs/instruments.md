@@ -2,11 +2,24 @@
 
 This file summarises the candidate trade expressions from [project_bible.md](project_bible.md) and [tradable_assets_source.md](tradable_assets_source.md). Before implementing any instrument or P&L calculation, read [conventions.md](conventions.md) and [../project/DECISIONS.md](../project/DECISIONS.md).
 
+The practical module blueprint is integrated into Section 3 of [project_bible.md](project_bible.md). Module A and Module B supply two information structures for the same relative-policy view; the instruments below are where the view is expressed and where P&L is earned. Module C compares and attributes the results.
+
+## Expression Universe And Priority
+
+| Expression | Project role | Priority |
+|---|---|---|
+| EUR/GBP spot | Diagnostic for currency direction and event response; not the preferred funded strategy | Keep, diagnostic |
+| One-month EUR/GBP forward / long-GBP exposure | Main tradable FX expression; spot plus forward/carry return | Core headline candidate, conditional on data gate |
+| UK-Germany 2Y rates spread | Main policy-sensitive rates expression; DV01-balanced | Core headline candidate |
+| UK-Germany 10Y rates spread | Long-end comparison with term-premium, fiscal and supply contamination | Secondary, data-gated |
+| One relative curve trade | Tests relative flattening or steepening | Conditional on pre-specified economic direction |
+| Equal-risk rates-FX basket | Portfolio from validated standalone expressions | Construct last |
+
 ## Rates Implementation Hierarchy
 
 1. Observed tradable futures or total-return instruments.
 2. Modelled synthetic zero-coupon returns.
-3. DV01 or duration approximation as a diagnostic or fallback proxy.
+3. DV01 or duration approximation as a diagnostic only under the latest working specification.
 
 A yield series is not itself an investable return. Rates exposure may be implemented through observed tradable instruments, synthetic zero-coupon returns or a DV01 approximation, and these must be labelled distinctly.
 
@@ -52,7 +65,7 @@ DIAGNOSTIC candidate.
 
 Exact fixing or close, holiday handling, reporting numeraire and source identifier are OPEN.
 
-## One-Month GBP/EUR FX Forward
+## One-Month EUR/GBP FX Forward
 
 ### Economic purpose
 
@@ -64,7 +77,7 @@ Slower multiweek UK/euro-area policy divergence and relative carry.
 
 ### Position for a relatively hawkish UK view
 
-Long GBP forward and short EUR forward.
+Long GBP forward and short EUR forward, economically short EUR/GBP.
 
 ### Main return drivers
 
@@ -78,13 +91,21 @@ FX risk sentiment, growth, inflation credibility, liquidity, forward data availa
 
 Observed one-month forward or forward points from a reproducible licensed source; otherwise a transparent CIP-based proxy may be considered and labelled.
 
+For Module A, the selected primary maturity-management convention is weekly constant-maturity 1M forward reset. At each weekly rebalance, mark and economically unwind the existing residual-maturity forward using the current matching forward rate for its original settlement date, then enter a fresh 1M forward at the new risk-scaled target notional. Do not value a three-week-remaining forward using today's fresh 1M forward rate.
+
+The pre-specified robustness implementation is monthly forward roll with weekly intra-month notional resizing at a common settlement date. This is subordinate to the primary weekly constant-tenor reset and must not be selected based on realised Sharpe.
+
+The detailed specification is in [project_bible.md](project_bible.md), Section 3.4.4.
+
 ### Required P&L components
 
-Spot-price movement, carry/forward contribution, transaction costs and total return.
+Spot-price movement, carry/forward contribution, mark-to-market P&L on the existing contract, unwind or termination cost, new-contract cost and total return.
 
 ### Required tests
 
 Quote-direction tests, forward-return decomposition checks and validation against a numerical example or vendor-calculated return where available.
+
+The FX engine must distinguish trade date, settlement/maturity date, original forward rate, current residual maturity, current matching forward rate, notional/direction, mark-to-market P&L, unwind/termination transaction cost and new-contract transaction cost.
 
 ### Current status
 
@@ -92,7 +113,7 @@ CANDIDATE. It is the main candidate FX trading expression, pending data feasibil
 
 ### Open questions
 
-Exact source, identifier, fixing time, quote convention, return formula, transaction costs and availability are OPEN.
+Exact source, identifier, fixing time, quote convention, return formula, transaction-cost values and availability are OPEN. The Module A forward maturity/rebalancing convention is FROZEN in [../project/DECISIONS.md](../project/DECISIONS.md).
 
 ## UK-Germany Two-Year Rates Spread
 
@@ -118,7 +139,9 @@ Future growth, inflation, expected policy path beyond the next decision, impleme
 
 ### Candidate implementation
 
-Observed tradable returns if clean and reproducible; otherwise modelled synthetic zero-coupon returns; DV01 approximation only as diagnostic or fallback proxy.
+Observed government-bond futures if clean and reproducible; modelled constant-maturity zero-coupon fallback/robustness; DV01 approximation diagnostic only.
+
+The latest working preference is actual government-bond futures, with synthetic constant-maturity fallback/robustness and DV01 approximation diagnostic only. Bible Section 3.4.7 defines target-based resizing, current observable contract/CTD DV01 in a common currency, maturity drift and provisional roll rules. Bloomberg Terminal access is guaranteed, but contract/history validation and D010 approval remain outstanding.
 
 ### Required P&L components
 
@@ -160,7 +183,9 @@ Long-term inflation expectations, government borrowing and supply, fiscal credib
 
 ### Candidate implementation
 
-Same hierarchy as the 2Y rates expression: observed tradable returns preferred, synthetic zero-coupon returns next, DV01 approximation only as diagnostic or fallback.
+Same hierarchy as the 2Y rates expression: observed futures preferred, synthetic constant-maturity fallback/robustness, DV01 approximation diagnostic only.
+
+Apply the futures-first working hierarchy and maintenance rules in Bible Section 3.4.7. Exact long-end contract mapping and risk history remain unverified.
 
 ### Required P&L components
 
@@ -190,7 +215,7 @@ Conditional. A hawkish BoE may flatten the curve if the front end rises sharply,
 
 ### Position for a relatively hawkish UK view
 
-OPEN. The source gives an illustrative candidate that could benefit if the UK curve flattens more than the German curve, but this is not approved.
+OPEN for production approval under D011. The latest working hypothesis is short UK 2Y / long UK 10Y against long German 2Y / short German 10Y, testing greater UK flattening. Bible Section 3.4.8 specifies the mechanism, within-country DV01 balance, comparable country risk and required sign scenarios; no production approval is inferred.
 
 ### Main return drivers
 
@@ -218,19 +243,21 @@ OPEN / conditional core candidate.
 
 ### Open questions
 
-Economic mechanism, exact direction, exact legs, duration balance, source series and acceptance tests are OPEN.
+Approval of the documented hypothesis/legs, numerical balancing and sign tests, validated instruments/data and costs remains OPEN. Optional 5Y curvature is explanatory only, with no extra traded sleeve.
 
 ### Variant governance
 
 The primary comparison may include at most one approved relative curve trade. Multiple curve variants may be used as diagnostics or as a small pre-registered robustness set, but they must be clearly labelled and may not be silently promoted into the primary ranking or basket.
 
-One additional curve variant may be run as post-Week-5 stretch work only if it is pre-authorised before the methodology freeze, every core gate is green and the output remains secondary unless a formal pre-freeze rule says otherwise.
+One additional curve variant may be run as stretch work after methodology freeze only if it is pre-authorised before the freeze, every core gate is green, core delivery remains achievable within available capacity and the output remains secondary unless a formal pre-freeze rule says otherwise.
 
 ## Cross-Asset Rates-FX Basket
 
 ### Economic purpose
 
 Portfolio combining approved expressions to test whether diversification improves stability across channels.
+
+The basket belongs in Module C. It is not a third macro signal and should not be built before the standalone expressions, return labels, costs and attribution have been validated.
 
 ### Macro view represented
 
@@ -251,6 +278,10 @@ Hidden concentration in one instrument, unstable correlations, over-scaled low-v
 ### Candidate implementation
 
 Equal-risk weighting is the preferred candidate. It is not automatically a frozen final rule.
+
+Start with the one-month forward and 2Y spread if both pass their gates. Add 10Y or curve exposure only after standalone validation, diversification evidence and explicit approval in [../project/DECISIONS.md](../project/DECISIONS.md). Do not automatically include every validated expression.
+
+Bible Section 3.4.9 records the intended core, separate 10Y/curve extension questions, full four-expression diagnostic and netting of shared underlying targets. Assess extensions on development/walk-forward diversification, drawdown/regime stability and incremental net-cost evidence. Word freeze wording does not override D012's OPEN membership status.
 
 ### Required P&L components
 
@@ -275,6 +306,7 @@ Approved components, final weighting, portfolio caps, volatility target, costs a
 - Basket: component P&L, risk contribution and diversification benefit.
 - Timing: event days versus non-event days; immediate versus post-event horizon.
 - State: high/low volatility, tightening/easing, normal/stress periods and pre-specified structural eras.
+- Combined A+B implementation, if built: Module A baseline, Module B overlay, exposure netting, common risk cap, overlapping holding periods and no double attribution.
 
 ## Open Implementation Decisions
 
@@ -282,7 +314,7 @@ Approved components, final weighting, portfolio caps, volatility target, costs a
 - Final rates-return implementation.
 - Exact data sources and identifiers.
 - Primary curve-trade direction.
-- Any post-Week-5 stretch curve variant, if pre-authorised.
+- Any secondary stretch curve variant activated after methodology freeze and core validation, if pre-authorised and capacity permits.
 - Basket composition.
 - Basket weighting status.
 - Holdout dates.

@@ -27,9 +27,9 @@ Success is possible even if returns are weak or negative, provided the project c
 | Category | Source meaning | Current implications |
 |---|---|---|
 | Core - must ship | Required to answer the central question | Reproducible data pipeline, validated returns, slow divergence module, event module, risk-normalised backtest, costs, attribution, robustness, dashboard and research note |
-| Core candidate - passes data gate | Included only if defensible by the Week 1 or early Week 2 gate | 1M FX forward, 2Y rates spread, 10Y rates spread, one relative curve expression and equal-risk rates-FX basket |
-| Stretch - only if green | Started only after the core has passed the Week 5 freeze gate | Additional curve variant, futures-based replication, richer current-signal monitor or one modest interactive extension |
-| Out of scope | Excluded from the seven-week build | FX options, machine learning, multi-country expansion, intraday execution, complex portfolio optimisation, live automated trading and broad technical-indicator searches |
+| Core candidate - passes data gate | Included only after defensible data, conventions and return construction pass approval | 1M FX forward, 2Y rates spread, 10Y rates spread, one relative curve expression and equal-risk rates-FX basket |
+| Stretch - only if green | Started only after methodology freeze and core validation, with spare capacity and core delivery protected | Additional curve variant, richer current-signal monitor or one modest interactive extension; futures are now preferred data-gated core rates construction |
+| Out of scope | Excluded from the core project | FX options, machine learning, multi-country expansion, intraday execution, complex portfolio optimisation, live automated trading and broad technical-indicator searches |
 
 The additional curve variant listed as stretch is pre-authorised only as secondary work. It does not change the frozen primary comparison or basket unless a formal pre-freeze decision says otherwise.
 
@@ -37,17 +37,33 @@ The additional curve variant listed as stretch is pre-authorised only as seconda
 
 Modules A-C are analytical workstreams, not necessarily one Python file per module.
 
+They are also not three independent trading systems. Module A and Module B generate two different forms of the same UK-versus-euro-area policy view. The candidate or approved FX and rates expressions are the markets in which that view is tested. Module C is the comparative and explanatory layer. The practical implementation details are integrated into Section 3 of [project_bible.md](project_bible.md).
+
+| Module | Economic object | Timing | Main output |
+|---|---|---|---|
+| A - slow divergence | Market-implied relative policy path and recent repricing | Weekly signal and rebalance; daily P&L | Tradable multiweek strategies across data-gated expressions |
+| B - event surprises | Identified unexpected BoE/ECB announcement shocks | Event-driven; immediate and post-event horizons | Shock-response evidence and implementable continuation/reversal tests |
+| C - comparison and attribution | Outputs from Modules A and B | Ex post analytical layer | Ranking, mechanism, attribution, robustness and conditional conclusions |
+
+The minimum viable core is deliberately narrow: build a transparent OIS-based repricing signal, apply it first to the one-month forward and the UK-Germany 2Y rates spread, analyse UKMPD and EA-MPD surprises, then use Module C to compare FX, short rates, long rates, curves and the basket only after standalone validation.
+
 ### Module A - Slow-Moving Policy Divergence
 
-Module A studies slower weekly policy divergence in the relative expected paths of Bank of England and ECB policy. It is likely to operate at a weekly frequency and evaluate one-, two- and four-week horizons. Candidate signal ingredients remain transparent: relative short-end policy-path level, recent change in the relative short-end path, FX carry or forward differential, and trend or curve information as a conditioning or robustness specification.
+Module A studies slower weekly policy divergence in the relative expected paths of Bank of England and ECB policy. It is the calendar-based trading module: signals are refreshed weekly, positions are rebalanced weekly and returns are measured daily. The working primary specification is the equal-weight composite of lagged-standardised 1w/4w changes in matched 6M/1Y par OIS differentials; 2Y is horizon robustness, while levels, carry and trend are separate benchmarks/diagnostics. One scalar drives all approved expressions. See Bible Section 3.4.1 and candidate decision D015 for the remaining data, standardisation and scaling gates.
+
+The OIS curves define the view; the data-gated trade expressions generate the strategy returns. Use OIS-based data for signal formation and a separate validated return series for traded rates exposure where possible, so the strategy does not become a mechanical same-series backtest.
 
 ### Module B - Monetary-Policy Event Surprises
 
-Module B studies identifiable BoE and ECB event surprises using UKMPD and EA-MPD. It should keep target/headline, path/forward-guidance and longer-horizon/QE dimensions separate where the databases support them. The module must distinguish contemporaneous event responses from implementable post-event returns.
+Module B studies identifiable BoE and ECB event surprises using UKMPD and EA-MPD. It should keep target/headline, path/forward-guidance and longer-horizon/QE dimensions separate where the databases support them. The module must distinguish contemporaneous event responses from implementable post-event returns. A hawkish BoE surprise is positive; a hawkish ECB surprise is negative in UK-minus-euro-area terms.
+
+Module A remains continuously invested through scheduled policy meetings under its latest weekly target. Module B takes no surprise-based position before the event and may trade only after the surprise is observable and the first defensible post-event price is available.
 
 ### Module C - Expression Comparison And Attribution
 
-Module C compares expressions and explains why they differ. It should decompose returns into spot movement, carry, UK rates leg, German rates leg, curve component, event versus non-event periods, scaling effect, costs and regime contribution.
+Module C compares expressions and explains why they differ. It does not create a third macro signal. It should decompose returns into spot movement, carry, UK rates leg, German rates leg, curve component, event versus non-event periods, scaling effect, costs and regime contribution.
+
+The basket belongs in Module C. It should be built only after standalone expressions are validated, starting with the forward plus 2Y rates if both pass their gates. Add 10Y or curve exposure only if it contributes a distinct, defensible source of information or diversification and is approved in [../project/DECISIONS.md](../project/DECISIONS.md).
 
 ## Core Hypotheses
 

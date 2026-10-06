@@ -1,119 +1,344 @@
 # Candidate data-source inventory.
-# Use null until identifiers, licences, timestamps and availability are verified.
+# Status values here are data-quality labels, not project decision-register statuses.
+# Raw licensed data must not be committed without explicit permission.
+
+bloomberg_terminal:
+  terminal_access: guaranteed
+  confirmation_source: user
+  confirmed_on: "2026-10-06"
+  sourcing_status: provisional_primary_market_data_route
+  local_api_access: unverified
+  historical_export_entitlements: unverified
+  reproducibility_rule: "Record terminal queries, fields, settings and export steps; preserve permitted raw snapshots and ingest them reproducibly in code."
+  licence: "Respect project entitlements; no public redistribution of licensed raw data unless permitted."
 
 eur_gbp_spot:
-  status: null
-  source: null
-  identifier: null
-  definition: "EUR/GBP spot exchange rate; pounds per euro."
-  units: null
-  frequency: null
-  timestamp: null
-  availability: null
-  licence: null
-  return_type: "diagnostic price series"
-  known_caveats: null
+  status: "approved_diagnostic"
+  source: "ECB Data Portal"
+  identifier: "EXR.D.GBP.EUR.SP00.A"
+  access_url: "https://data-api.ecb.europa.eu/service/data/EXR/D.GBP.EUR.SP00.A"
+  definition: "ECB reference exchange rate; pound sterling per euro."
+  units: "GBP per EUR"
+  sign: "A fall means GBP strengthens; long GBP/short EUR gains when EUR/GBP falls."
+  frequency: "daily, ECB/TARGET business days"
+  timestamp: "Reference process around 14:10 CET; usually published around 16:00 CET; CSV title says 2.15 pm CET."
+  first_available: "1999-01-04"
+  last_checked_available: "2026-07-31"
+  missing_periods: "Weekends, TARGET closing days and occasional source non-publication."
+  transformations: "Store level; compute log/decimal returns; long-GBP spot contribution is negative EUR/GBP log change before costs."
+  licence: "ECB public data terms and attribution; reference rate is informational, not an executable trade price."
+  return_type: "price"
+  known_caveats: "BoE XUDLERS sample appears inverted relative to EUR/GBP and should only be used with explicit inversion."
 
 fx_forward_1m:
-  status: null
-  source: null
+  status: "conditional_pending_bloomberg_export_validation"
+  source: "Bloomberg Terminal access guaranteed; exact observed forward history and fields unverified."
   identifier: null
-  definition: "One-month GBP/EUR forward or forward-points series."
-  units: null
-  frequency: null
+  access_url: null
+  definition: "One-month forward exposure equivalent to long GBP and short EUR."
+  units: "forward outright or forward points, subject to selected source"
+  sign: "Must be converted so positive GBP exposure gains when EUR/GBP falls, after forward/carry and costs."
+  frequency: "usually daily vendor close or fixing"
+  timestamp: "Vendor close/fixing timestamp required; unknown until source is selected."
+  first_available: null
+  last_checked_available: null
+  missing_periods: "Unknown until licensed source or proxy inputs are selected."
+  transformations: "Observed forward return decomposition or labelled CIP proxy from audited spot and one-month GBP and EUR rates."
+  licence: "Licensed market data must not be committed unless licence permits; both collaborators must reproduce the authorised export/ingestion workflow."
+  return_type: "observed forward price if licensed; synthetic proxy if CIP construction is used"
+  known_caveats: "The 2026-08-03 local API finding is historical, not a Terminal-access blocker. Exact exports, timestamps and histories remain unverified; 1M quotes alone do not establish residual-maturity closeout valuations."
+
+fx_forward_residual_maturity:
+  status: conditional_pending_bloomberg_export_validation
+  source: Bloomberg Terminal
+  identifier: null
+  fields: null
+  definition: "Forward rate/valuation for each outstanding contract's original settlement date."
+  units: "EUR/GBP outright after verified quote conversion; source points/discounting conventions unresolved."
   timestamp: null
-  availability: null
-  licence: null
-  return_type: null
-  known_caveats: "Forward data may require licensed access or a clearly labelled proxy."
+  historical_coverage: null
+  transformations: "Match original settlement date; any tenor interpolation and discounting must be documented and validated."
+  return_type: "Observed valuation inputs or explicitly modelled interpolation; not a fresh 1M quote used indiscriminately."
+  known_caveats: "Required by frozen D028 weekly reset; no residual-tenor sample has been validated."
+
+uk_ois_par_6m:
+  status: conditional_pending_bloomberg_export_validation
+  source: Bloomberg Terminal
+  identifier: null
+  field: null
+  definition: UK SONIA par OIS rate
+  tenor: 6M
+  signal_role: primary_1w_and_4w_repricing
+  units: "Verify source units; normalise to decimal annual rates."
+  frequency: daily
+  timestamp: null
+  first_available: null
+  last_checked_available: null
+  return_type: yield_signal_not_return
+  known_caveats: "No matched par-rate sample validated; BoE spot-curve sample is a different object."
+
+uk_ois_par_1y:
+  status: conditional_pending_bloomberg_export_validation
+  source: Bloomberg Terminal
+  identifier: null
+  field: null
+  definition: UK SONIA par OIS rate
+  tenor: 1Y
+  signal_role: primary_1w_and_4w_repricing
+  units: "Verify source units; normalise to decimal annual rates."
+  frequency: daily
+  timestamp: null
+  first_available: null
+  last_checked_available: null
+  return_type: yield_signal_not_return
+  known_caveats: "No matched par-rate sample validated; BoE spot-curve sample is a different object."
+
+uk_ois_par_2y:
+  status: conditional_pending_bloomberg_export_validation
+  source: Bloomberg Terminal
+  identifier: null
+  field: null
+  definition: UK SONIA par OIS rate
+  tenor: 2Y
+  signal_role: horizon_robustness_1w_and_4w_repricing
+  units: "Verify source units; normalise to decimal annual rates."
+  frequency: daily
+  timestamp: null
+  first_available: null
+  last_checked_available: null
+  return_type: yield_signal_not_return
+  known_caveats: "No matched par-rate sample validated; keep separate from BoE 2Y spot-curve diagnostic."
+
+ea_ois_par_6m:
+  status: conditional_pending_bloomberg_export_validation
+  source: Bloomberg Terminal
+  identifier: null
+  field: null
+  definition: "Euro-area par OIS rate; verify EONIA/ESTR historical benchmark mapping."
+  tenor: 6M
+  signal_role: primary_1w_and_4w_repricing
+  units: "Verify source units; normalise to decimal annual rates."
+  frequency: daily
+  timestamp: null
+  first_available: null
+  last_checked_available: null
+  return_type: yield_signal_not_return
+  known_caveats: "Require documented continuous history/splice; no matched sample or transition reconciliation completed."
+
+ea_ois_par_1y:
+  status: conditional_pending_bloomberg_export_validation
+  source: Bloomberg Terminal
+  identifier: null
+  field: null
+  definition: "Euro-area par OIS rate; verify EONIA/ESTR historical benchmark mapping."
+  tenor: 1Y
+  signal_role: primary_1w_and_4w_repricing
+  units: "Verify source units; normalise to decimal annual rates."
+  frequency: daily
+  timestamp: null
+  first_available: null
+  last_checked_available: null
+  return_type: yield_signal_not_return
+  known_caveats: "Require documented continuous history/splice; no matched sample or transition reconciliation completed."
+
+ea_ois_par_2y:
+  status: conditional_pending_bloomberg_export_validation
+  source: Bloomberg Terminal
+  identifier: null
+  field: null
+  definition: "Euro-area par OIS rate; verify EONIA/ESTR historical benchmark mapping."
+  tenor: 2Y
+  signal_role: horizon_robustness_1w_and_4w_repricing
+  units: "Verify source units; normalise to decimal annual rates."
+  frequency: daily
+  timestamp: null
+  first_available: null
+  last_checked_available: null
+  return_type: yield_signal_not_return
+  known_caveats: "Require documented continuous history/splice; no matched sample or transition reconciliation completed."
+
+rates_futures:
+  status: conditional_pending_contract_and_export_validation
+  source: Bloomberg Terminal
+  contract_mapping:
+    uk_2y: null
+    uk_10y: null
+    german_2y: null
+    german_10y: null
+  price_fields: null
+  dv01_ctd_fields: null
+  timestamp: null
+  historical_coverage: null
+  required_data:
+    - individual_contract_prices
+    - historical_contract_chains
+    - contract_dv01_and_ctd_metadata
+    - volume_and_open_interest
+    - expiry_first_notice_last_trading_and_delivery_calendars
+  return_type: observed_tradable_return_inputs_pending_validation
+  known_caveats: "Terminal access does not validate contract liquidity/maturity matching or historical risk data. Continuous adjusted prices alone are insufficient for executable roll P&L."
 
 uk_ois_curve:
-  status: null
-  source: null
-  identifier: null
-  definition: "UK OIS curve candidate for relative policy-path signal."
-  units: null
-  frequency: null
-  timestamp: null
-  availability: null
-  licence: null
-  return_type: "signal input"
-  known_caveats: null
+  status: "provisional_diagnostic_input"
+  source: "Bank of England yield curves"
+  identifier: "latest-yield-curve-data.zip and oisddata.zip; OIS workbook, 4. spot curve, years: 2"
+  access_url: "https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/latest-yield-curve-data.zip"
+  archive_url: "https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/oisddata.zip"
+  definition: "Sterling OIS spot curve rate at two-year maturity; public diagnostic, distinct from primary matched par OIS."
+  units: "percent per annum, continuously compounded"
+  sign: "Higher value means higher expected UK policy path, all else equal."
+  frequency: "daily trading/business days"
+  timestamp: "BoE aims to publish latest daily yield curves by noon on the following business day."
+  first_available: "2009 archive start"
+  last_checked_available: "July 2026 current-month sample"
+  missing_periods: "UK holidays, non-trading days and unavailable maturity cells."
+  transformations: "Convert percent to decimal; align to observable signal timestamp with execution lag."
+  licence: "BoE website terms; data may be revised."
+  return_type: "yield signal, not return"
+  known_caveats: "BoE yield curves are downloadable files, not API data; OIS maturities longer than 5Y are only available from late 2021."
 
-uk_rates_instrument:
-  status: null
-  source: null
-  identifier: null
-  definition: "UK rates return instrument or curve input for rates P&L."
-  units: null
-  frequency: null
-  timestamp: null
-  availability: null
-  licence: null
-  return_type: null
-  known_caveats: "A raw yield series is not an investable return."
+uk_rates_pnl_curve:
+  status: "provisional_pending_return_method"
+  source: "Bank of England yield curves"
+  identifier: "latest-yield-curve-data.zip and glcnominalddata.zip; GLC nominal workbook, 4. spot curve, years: 2 and years: 10"
+  access_url: "https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/latest-yield-curve-data.zip"
+  archive_url: "https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/glcnominalddata.zip"
+  definition: "UK nominal gilt curve spot rates at two-year and ten-year maturities for rates P&L construction."
+  units: "percent per annum, continuously compounded"
+  sign: "UK yield rise should help the short-UK-duration leg after duration/DV01 mapping."
+  frequency: "daily trading/business days"
+  timestamp: "BoE aims to publish latest daily yield curves by noon on the following business day."
+  first_available: "1979 archive start; short-end information not usable before March 1997 per BoE caveat"
+  last_checked_available: "July 2026 current-month sample"
+  missing_periods: "UK holidays, non-trading days and unavailable maturity cells."
+  transformations: "Convert percent to decimal; build labelled synthetic zero-coupon return or DV01 approximation; preserve UK-leg P&L."
+  licence: "BoE website terms; data may be revised."
+  return_type: "modelled synthetic return or approximate proxy; raw yield is not a return"
+  known_caveats: "Not an observed tradable total return."
 
 german_2y:
-  status: null
-  source: null
-  identifier: null
-  definition: "German two-year rates leg candidate."
-  units: null
-  frequency: null
-  timestamp: null
-  availability: null
-  licence: null
-  return_type: null
-  known_caveats: null
+  status: "provisional_pending_return_method"
+  source: "Deutsche Bundesbank SDMX API"
+  identifier: "BBSIS.D.I.ZAR.ZI.EUR.S1311.B.A604.R02XX.R.A.A._Z._Z.A"
+  access_url: "https://api.statistiken.bundesbank.de/rest/data/BBSIS/D.I.ZAR.ZI.EUR.S1311.B.A604.R02XX.R.A.A._Z._Z.A"
+  definition: "Yield derived from term structure of listed Federal securities with annual coupon payments, residual maturity 2.0 years."
+  units: "percent per annum"
+  sign: "German yield rise hurts the long-German-duration leg in the hawkish-UK relative rates trade."
+  frequency: "daily calendar with missing non-trading days"
+  timestamp: "API metadata sample last update 2026-07-31 12:01:49; lag until update policy is pinned."
+  first_available: "1997-08-01 formal start; first non-missing checked 1997-08-07"
+  last_checked_available: "2026-07-31"
+  missing_periods: "Weekends, German holidays and No value available records."
+  transformations: "Convert percent to decimal; use in DV01-balanced synthetic/proxy German leg; preserve German-leg P&L."
+  licence: "Bundesbank public statistics terms."
+  return_type: "yield input for modelled synthetic return or proxy"
+  known_caveats: "Official yield, not observed tradable return."
 
 german_10y:
-  status: null
-  source: null
-  identifier: null
-  definition: "German ten-year rates leg candidate."
-  units: null
-  frequency: null
-  timestamp: null
-  availability: null
-  licence: null
-  return_type: null
-  known_caveats: null
+  status: "provisional_pending_return_method"
+  source: "Deutsche Bundesbank SDMX API"
+  identifier: "BBSIS.D.I.ZAR.ZI.EUR.S1311.B.A604.R10XX.R.A.A._Z._Z.A"
+  access_url: "https://api.statistiken.bundesbank.de/rest/data/BBSIS/D.I.ZAR.ZI.EUR.S1311.B.A604.R10XX.R.A.A._Z._Z.A"
+  definition: "Yield derived from term structure of listed Federal securities with annual coupon payments, residual maturity 10.0 years."
+  units: "percent per annum"
+  sign: "German yield rise hurts the long-German-duration leg in the hawkish-UK relative rates trade."
+  frequency: "daily calendar with missing non-trading days"
+  timestamp: "API metadata sample last update 2026-07-31 12:01:50; lag until update policy is pinned."
+  first_available: "1997-08-01 formal start; first non-missing checked 1997-08-07"
+  last_checked_available: "2026-07-31"
+  missing_periods: "Weekends, German holidays and No value available records."
+  transformations: "Convert percent to decimal; use in DV01-balanced synthetic/proxy German leg; preserve German-leg P&L."
+  licence: "Bundesbank public statistics terms."
+  return_type: "yield input for modelled synthetic return or proxy"
+  known_caveats: "Official yield, not observed tradable return; compounding/methodology must be reconciled with BoE synthetic-return assumptions."
+
+boe_policy_dates:
+  status: "provisional_event_calendar"
+  source: "Bank of England MPC voting history and latest/upcoming MPC dates"
+  identifier: "mpcvoting.xlsx"
+  access_url: "https://www.bankofengland.co.uk/-/media/boe/files/monetary-policy-summary-and-minutes/mpcvoting.xlsx"
+  definition: "MPC decision dates, Bank Rate decisions, votes and policy context."
+  units: "dates, percent Bank Rate, member votes"
+  sign: "Map event surprises so hawkish UK is positive."
+  frequency: "event"
+  timestamp: "BoE monetary-policy announcements normally at 12:00 London time; UKMPD datetimes are GMT."
+  first_available: "1997 MPC history"
+  last_checked_available: "Downloaded on 2026-08-03"
+  missing_periods: "Special or emergency meetings require explicit handling."
+  transformations: "Convert meeting dates to event calendar; join to UKMPD with explicit timestamp and lag."
+  licence: "BoE public terms."
+  return_type: "event calendar/context input"
+  known_caveats: "Voting workbook is context, not high-frequency surprise data."
+
+ecb_policy_dates:
+  status: "provisional_event_calendar"
+  source: "ECB Governing Council calendar and monetary-policy decisions; EA-MPD event dates"
+  identifier: "ECB calendar HTML plus Dataset_EA-MPD.xlsx dates"
+  access_url: "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html"
+  definition: "ECB Governing Council monetary-policy meeting and decision/press-conference dates."
+  units: "dates and event-window labels"
+  sign: "Map ECB hawkish surprises as negative for UK-minus-EA relative-hawkish signal unless otherwise normalised."
+  frequency: "event"
+  timestamp: "ECB decisions 14:15 CET; press conference 14:45 CET."
+  first_available: "EA-MPD sample starts 1999-01-07"
+  last_checked_available: "EA-MPD sample through 2025-10-30; calendar downloaded on 2026-08-03"
+  missing_periods: "Calendar page is current/future; archive coverage must be fixed by event dataset and decision archive."
+  transformations: "Separate decision and press-conference windows; join to EA-MPD with explicit sign mapping."
+  licence: "ECB public terms."
+  return_type: "event calendar/context input"
+  known_caveats: "Calendar HTML can change; freeze raw snapshots for reproducibility."
 
 ukmpd:
-  status: null
-  source: null
-  identifier: null
-  definition: "UK monetary-policy event-study database."
-  units: null
+  status: "provisional_event_surprise"
+  source: "Bank of England"
+  identifier: "measuring-monetary-policy-in-the-uk-the-ukmpesd.xlsx"
+  access_url: "https://www.bankofengland.co.uk/-/media/boe/files/working-paper/2023/measuring-monetary-policy-in-the-uk-the-ukmpesd.xlsx"
+  definition: "UK Monetary Policy Event-Study Database with high-frequency UK policy surprises and factors."
+  units: "asset surprises and factor units; tab-specific"
+  sign: "Target, Path and QE signs must be mapped so positive means hawkish UK."
   frequency: "event"
-  timestamp: null
-  availability: null
-  licence: null
+  timestamp: "Workbook readme says all datetimes are reported in GMT."
+  first_available: "1997-06-06 11:00:00"
+  last_checked_available: "2026-04-30 11:30:00"
+  missing_periods: "Only covered events/windows; missing where source assets unavailable."
+  transformations: "Standardise factor signs; keep target/path/QE separate; join after event-window timing rules."
+  licence: "Public BoE workbook; underlying raw source is LSEG Tick History plus author calculations; cite authors."
   return_type: "event surprise input"
-  known_caveats: "Version, factor definitions and sign mapping must be recorded."
+  known_caveats: "Database revised and updated in April 2026; version must be pinned."
 
 eampd:
-  status: null
-  source: null
-  identifier: null
-  definition: "Euro-area monetary-policy event-study database."
-  units: null
+  status: "provisional_event_surprise"
+  source: "European Central Bank"
+  identifier: "Dataset_EA-MPD.xlsx"
+  access_url: "https://www.ecb.europa.eu/pub/pdf/annex/Dataset_EA-MPD.xlsx"
+  definition: "Euro Area Monetary Policy Event-Study Database with press-release, press-conference and monetary-event windows."
+  units: "asset surprises and factor/event-window changes"
+  sign: "ECB hawkish surprises reduce the relative UK-hawkish signal unless signs are normalised differently."
   frequency: "event"
-  timestamp: null
-  availability: null
-  licence: null
+  timestamp: "Decision/press-release and press-conference windows; ECB decisions 14:15 CET and press conference 14:45 CET."
+  first_available: "1999-01-07"
+  last_checked_available: "2025-10-30"
+  missing_periods: "Window-specific missing fields and changing available instruments."
+  transformations: "Keep windows separate; standardise and sign-map before UK/EA comparison."
+  licence: "Public ECB workbook; cite Altavilla, Brugnolini, Gurkaynak, Motto and Ragusa."
   return_type: "event surprise input"
-  known_caveats: "Windows, factor definitions and comparability with UKMPD must be recorded."
+  known_caveats: "HTTP header checked on 2026-08-03 showed last modified 2025-11-20; version pinning required."
 
 risk_proxy:
-  status: null
-  source: null
-  identifier: null
-  definition: "Pre-agreed reproducible volatility or risk-state proxy."
-  units: null
-  frequency: null
-  timestamp: null
-  availability: null
-  licence: null
-  return_type: "regime or risk input"
-  known_caveats: "Value must be observable at the strategy timestamp."
+  status: "provisional_proxy"
+  source: "Cboe"
+  identifier: "VIX_History.csv"
+  access_url: "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv"
+  secondary_cross_check: "FRED VIXCLS"
+  definition: "Cboe Volatility Index daily close."
+  units: "index level; CSV includes open, high, low and close"
+  sign: "Higher value means higher global/equity risk aversion; not a policy signal."
+  frequency: "daily US market close"
+  timestamp: "Daily close; use only after the US close and with next eligible strategy timestamp."
+  first_available: "1990-01-02"
+  last_checked_available: "2026-07-31; Cboe file header last modified 2026-08-02."
+  missing_periods: "US market holidays and missing observations."
+  transformations: "Use lagged level, change, z-score or high/low regime only after pre-registration."
+  licence: "Cboe terms apply; Cboe states historical VIX data are furnished for site visitors and accuracy is not guaranteed."
+  return_type: "risk/regime proxy"
+  known_caveats: "US equity-volatility proxy may be an imperfect UK/EU risk measure."

@@ -34,6 +34,12 @@ Long GBP / short EUR is positive FX exposure. Under the EUR/GBP quote, this expo
 
 A positive macro signal means the UK is becoming more hawkish, or less dovish, relative to the euro area. All signs, charts and transformations should inherit this convention unless the decision register records a formal change.
 
+| Signal | FX direction | Relative-rates direction |
+|---|---|---|
+| Positive | Long GBP / short EUR; economically short EUR/GBP | Short UK duration / long German duration |
+| Near zero | Little or no position, or the documented neutral position | Little or no position, or the documented neutral position |
+| Negative | Short GBP / long EUR; economically long EUR/GBP | Long UK duration / short German duration |
+
 ## Hawkish-UK Rates Direction
 
 For a relatively hawkish UK view, the natural rates expression is short UK duration and long German duration. The economic intuition is that UK yields should rise relative to German yields, and bond prices generally fall when yields rise.
@@ -55,6 +61,10 @@ Every return series must state its numeraire. This convention should be frozen o
 ## Timestamps And Execution
 
 PROVISIONAL. Form the weekly signal only after all required inputs are observable, then assume execution at the next business day. Use lagged volatility, costs and regime states. Do not assume execution at a close that is also used to compute the signal unless an executable pre-close convention is proven.
+
+For close-only cross-asset Module A data, the working primary convention is Thursday-close signal formation followed by Friday-close execution. Friday-close signal to Monday-close execution and a midweek schedule are timing robustness checks, not alternative primary timings to select by realised Sharpe.
+
+Module A keeps its latest weekly target through scheduled BoE and ECB meetings. It does not automatically flatten before the event and does not add a separate pre-event surprise bet. Module B may enter a surprise-driven trade only after the surprise is observable and the first defensible post-event price is available.
 
 ## Units And Basis Points
 

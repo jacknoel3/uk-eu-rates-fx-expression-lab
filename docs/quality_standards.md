@@ -13,6 +13,8 @@ The project is not judged by whether it discovers a high Sharpe ratio. It is jud
 - No unresolved look-ahead, calendar or cost-application issue remains.
 - All expressions are compared on a common ex-ante risk basis and gross/net results are shown.
 - The event module separates contemporaneous response from implementable post-event trading.
+- Module A event-day P&L is labelled as P&L from a pre-existing weekly position, not as proof of pre-event surprise prediction.
+- Any combined Module A plus Module B portfolio nets overlapping exposures, applies a common risk cap and prevents double attribution.
 - The report discloses limitations and failed tests.
 
 ### Strong Project Standard
@@ -77,3 +79,5 @@ Raw data is immutable. Transformations occur in code. Config files hold sample d
 ## Communication And Claim Standards
 
 State whether each result is descriptive, predictive, causal/event-study or implementable. Use conditional language when uncertainty or regime dependence is material. Never call a synthetic return a traded return. Report sample counts, uncertainty and full relevant comparisons beside headline metrics.
+
+Do not claim contemporaneous event-window responses were tradable before the announcement. Do not treat carry-only, trend-only, rate-level-only, constant-direction or unscaled benchmarks as optional decorations when they are central to the module being evaluated.

@@ -1,6 +1,12 @@
 # macOS
 .DS_Store
 
+# Microsoft Word temporary lock files
+~$*
+
+# Local copies of literature; cite source links in the documentation.
+docs/source/readings/*.pdf
+
 # Python
 __pycache__/
 *.py[cod]

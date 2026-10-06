@@ -1,13 +1,47 @@
 # Strategy configuration stub.
-# Runtime parameters remain open until the Week 1-3 decision gates.
+# Runtime parameters remain open until the relevant signal, risk and instrument gates.
 
 signal:
   status: provisional
+  specification_status: candidate_D015
+  primary_object: matched_par_ois_repricing
+  primary_tenors: [6M, 1Y]
+  repricing_lookbacks_weeks: [1, 4]
+  component_weight: 0.25
+  horizon_robustness_tenor: 2Y
+  level_role: benchmark_only
+  standardisation_window: null
+  standardisation_min_history: null
+  component_caps: null
+  signal_to_position_map: null
   frequency: weekly
   frequency_status: provisional
   positive_direction: uk_more_hawkish_relative_to_euro_area
   execution_lag: next_business_day
   timestamp_rule: inputs_observable_before_signal_formation
+  decision_day: Thursday
+  execution_day: Friday
+  timing_status: provisional_D020
+
+fx_forward_1m:
+  maturity_rebalancing_status: frozen
+  primary: weekly_constant_maturity_reset
+  robustness: monthly_roll_weekly_same_maturity_notional_resizing
+  mtm_rule: value_existing_forward_against_original_settlement_date_or_residual_maturity
+  not_primary:
+    - monthly_only_primary_rebalancing
+    - layering_fresh_1m_forwards_until_each_original_maturity
+  required_position_fields:
+    - trade_date
+    - settlement_or_maturity_date
+    - original_forward_rate
+    - current_residual_maturity
+    - current_matching_forward_rate
+    - notional
+    - direction
+    - mark_to_market_pnl
+    - unwind_or_termination_transaction_cost
+    - new_contract_transaction_cost
 
 reporting:
   numeraire: GBP
@@ -26,8 +60,43 @@ risk:
   instrument_caps: null
   portfolio_gross_cap: null
 
+rates:
+  implementation_approval_status: open_D010
+  preferred_implementation: government_bond_futures
+  fallback_and_robustness: constant_maturity_synthetic_zero_coupon
+  dv01_yield_change_role: diagnostic_only
+  rebalance_rule: trade_target_minus_existing_contract_quantities
+  balance_currency: GBP
+  dv01_rule: observable_contract_ctd_dv01_with_common_currency_conversion
+  roll:
+    status: provisional_pending_exchange_calendar_validation
+    primary: market_specific_calendar_window_prefer_weekly_rebalance
+    uk_proposed_anchor: first_notice_day
+    german_proposed_anchor: last_trading_day
+    proposed_window_business_days_before_anchor: [10, 5]
+    allow_independent_leg_rolls: true
+    maintenance_before_deadline: true
+    combined_roll_resize: trade_directly_to_next_contract_final_target
+    robustness: next_contract_volume_exceeds_current_for_two_completed_trading_days
+    safe_deadline: null
+
+relative_curve:
+  approval_status: open_D011
+  working_hypothesis: uk_2s10s_flattens_more_than_germany_for_positive_signal
+  positive_signal_legs:
+    uk_2y: short_duration
+    uk_10y: long_duration
+    german_2y: long_duration
+    german_10y: short_duration
+  balance_rule: within_country_dv01_then_common_currency_country_risk_and_portfolio_targeting
+  curvature_5y_role: optional_diagnostic_only
+
 basket:
   status: open
+  intended_core: [fx_forward_1m, rates_spread_2y]
+  extension_questions: [add_10y, add_relative_curve]
+  full_four_expression_role: diagnostic_robustness
+  net_underlying_positions_before_trading: true
   weighting_candidate: equal_risk
   weighting_status: provisional_candidate
   approved_components: []
