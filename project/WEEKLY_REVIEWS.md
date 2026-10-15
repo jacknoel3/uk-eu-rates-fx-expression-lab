@@ -36,19 +36,24 @@ Recorded: 2026-10-06. These are four reconstructed reporting periods combining c
 
 ### Position after four reporting weeks
 
-Design, scaffolding and first public-data feasibility checks are complete. The data gate remains incomplete: matched UK/EA 6M/1Y par OIS, residual-tenor forwards and futures histories/risk/calendars still need validation. Source packages contain placeholders; there are no financial tests, processed datasets, backtests or working dashboard. `CURRENT_STATE.md` records Week 4 completed, Week 5 next, and the pending implementation milestones separately.
+Design, scaffolding and first public-data feasibility checks are complete. The data gate remains incomplete: matched UK/EA 6M/1Y par OIS, residual-tenor forwards and futures histories/risk/calendars still need validation. Source packages contain placeholders; there are no financial tests, processed datasets, backtests or working dashboard. At this retrospective review, `CURRENT_STATE.md` recorded Week 4 completed, Week 5 next, and the pending implementation milestones separately.
 
 Next: validate Bloomberg exports and approve sources/instruments, lock sample/holdout and risk/cost and policy-meeting rules, then build and sign-test the instrument engine before an end-to-end MVP.
 
-## Week 5 - Progress to date
+## Week 5 - Literature, scope and data requirements
 
-Recorded: 2026-10-06. Week 5 is in progress; this records major additions since the previous review.
+Initial progress recorded: 2026-10-06. Closing research/documentation review: 2026-10-13. Data and instrument gates remain incomplete and carry forward to Week 6.
 
 - Completed the five local research PDFs in Bible order, covering 214 pages, and consolidated concise findings, limitations and project implications in [research_notes.md](../docs/research_notes.md).
 - Clarified FX carry/momentum costs and global-risk exposure, bond risk-premium interpretation, and backtest-selection/holdout discipline. These are research notes; no frozen or provisional decisions changed.
 - Simplified `docs/`: moved Word sources and `readings/` out of `source/`, removed unused `assets/` and Word temporary lock files, and updated links. Word specifications are maintained alongside Markdown; literature PDFs remain excluded from Git.
 - Documentation links, source-integrity and formula checks passed. Bloomberg exports, instrument validation and implementation gates remain outstanding; validating those inputs remains the next priority.
 - Consolidated the detailed weekly OIS strategy, instrument examples and evaluation rules in the Markdown/Word Project Bible; kept signal, risk, costs and approval gates unchanged (D031).
+- Consolidated the detailed acquisition plan into the existing [data_sources.md](../docs/data_sources.md), covering signal, FX original-settlement valuation, individual futures/risk/roll records, costs/funding, calendars, diagnostics and derived benchmark/basket/attribution inputs. No additional Markdown file or independently maintained PDF was created.
+- Recommended broad daily history requests from 2005 onward, earlier where practical, with approximately 2010-onward common history as a feasibility investigation and extra warm-up data. These are acquisition proposals, not verified histories or selected sample dates. Development/validation/holdout dates remain null; reserve the holdout after coverage approval and before full performance exploration.
+- Verified candidate maturity ranges against ICE/Eurex specifications; identified the need to prove UK short-end liquidity and genuinely historical CTD/DV01. Flagged the distinction between existing Bundesbank ZAR coupon yields and zero/discount-curve inputs, plus residual-maturity curve nodes for synthetic ageing/roll-down.
+- Closing checks passed: local documentation links/anchors, acquisition-table column counts and unique inventory IDs, and Git whitespace checks. Decision/configuration/source files are unchanged and sample-split dates remain null. Financial tests were not run because this update changes documentation only and no financial implementation exists yet.
+- No frozen or provisional decision was changed, no Bloomberg data was acquired and no financial engine or backtest was implemented. Next: the P0 export/valuation feasibility package, followed by broad extraction, coverage/conventions audit and formal sample/instrument decisions.
 
 ## Template
 

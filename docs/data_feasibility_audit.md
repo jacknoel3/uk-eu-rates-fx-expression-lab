@@ -2,6 +2,8 @@
 
 Initial audit: 2026-08-03. Context update: 2026-10-06.
 
+The 2026-10-13 [data-requirements and acquisition plan](data_sources.md) is the current collection guide. This file preserves historical feasibility evidence; its successful public samples do not validate the Bloomberg par-OIS, forward or futures requirements. In particular, the existing Bundesbank ZAR coupon-yield samples do not establish the zero/discount curves needed for the synthetic rates engine; see the plan's rates section.
+
 This audit records the first feasibility pass for the proposed market, policy-calendar and risk
 series. It is not a final data-ingestion design. The goal is to prove whether each
 source can be accessed programmatically, whether the definition is economically

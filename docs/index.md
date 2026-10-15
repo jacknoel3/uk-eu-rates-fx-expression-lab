@@ -9,7 +9,7 @@ This directory contains the research, methodology and implementation documentati
 | [research_notes.md](research_notes.md) | Paper-by-paper findings, limitations and implications from the five local research PDFs |
 | [conventions.md](conventions.md) | FX signs, rates positions, units, numeraires and timestamps |
 | [instruments.md](instruments.md) | FX forwards, rates spreads, curve trades and basket construction |
-| [data_sources.md](data_sources.md) | Data families, definitions, availability and audit requirements |
+| [data_sources.md](data_sources.md) | Broad Bloomberg collection first, conditional research priorities, and later cleaning/validation reference |
 | [data_feasibility_audit.md](data_feasibility_audit.md) | Historical public-data audit plus current Bloomberg access and validation requirements |
 | [methodology.md](methodology.md) | Weekly signal, risk, costs, backtesting and attribution |
 | [quality_standards.md](quality_standards.md) | Testing, robustness, holdout and definition of done |
